@@ -1,0 +1,529 @@
+{% extends "index.html" %}
+
+
+{% block title %}
+Student Management | Attendance Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-4">
+
+
+    <!-- ================================================= -->
+    <!-- HEADER -->
+    <!-- ================================================= -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                Student Management
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage students and their academic sessions.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'admin_dashboard' %}"
+            class="btn btn-outline-secondary"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- SESSION FILTER -->
+    <!-- ================================================= -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <h5 class="fw-bold mb-3">
+                Filter Students
+            </h5>
+
+
+            <form method="get">
+
+                <div class="row align-items-end">
+
+
+                    <!-- Session -->
+
+                    <div class="col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Academic Session
+                        </label>
+
+
+                        <select
+                            name="session"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                All Sessions
+                            </option>
+
+
+                            {% for session in sessions %}
+
+                                <option
+                                    value="{{ session.id }}"
+                                    {% if request.GET.session == session.id|stringformat:"s" %}
+                                        selected
+                                    {% endif %}
+                                >
+
+                                    {{ session.year }}
+
+                                    {% if session.is_graduated %}
+                                        (Graduated)
+                                    {% endif %}
+
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+
+                    <!-- Filter -->
+
+                    <div class="col-md-3 mt-3 mt-md-0">
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary w-100"
+                        >
+                            Filter
+                        </button>
+
+                    </div>
+
+
+
+                    <!-- Reset -->
+
+                    <div class="col-md-3 mt-3 mt-md-0">
+
+                        <a
+                            href="{% url 'student_management' %}"
+                            class="btn btn-outline-secondary w-100"
+                        >
+                            Reset
+                        </a>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================================================= -->
+    <!-- STUDENT TABLE -->
+    <!-- ================================================= -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body">
+
+
+            <!-- Table Header -->
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        Students
+                    </h5>
+
+                    <small class="text-muted">
+                        Students are displayed by roll number.
+                    </small>
+
+                </div>
+
+
+                <span class="badge bg-primary px-3 py-2">
+
+                    {{ students|length }}
+
+                    {% if students|length == 1 %}
+                        Student
+                    {% else %}
+                        Students
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+
+
+            <!-- ================================================= -->
+            <!-- TABLE -->
+            <!-- ================================================= -->
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>
+                                Roll
+                            </th>
+
+
+                            <th>
+                                Student
+                            </th>
+
+
+                            <th>
+                                Email
+                            </th>
+
+
+                            <th>
+                                Session
+                            </th>
+
+
+                            <th>
+                                Gender
+                            </th>
+
+
+                            <th>
+                                Status
+                            </th>
+
+
+                            <th class="text-center">
+                                Action
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+
+                    <tbody>
+
+
+                        {% for student in students %}
+
+                            <tr>
+
+
+                                <!-- ================================= -->
+                                <!-- ROLL -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    {% if student.roll %}
+
+                                        <span class="fw-bold">
+                                            {{ student.roll }}
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            —
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+
+                                <!-- ================================= -->
+                                <!-- STUDENT -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    <div class="d-flex align-items-center">
+
+
+                                        <!-- Profile Image -->
+
+                                        {% if student.profile_image %}
+
+                                            <img
+                                                src="{{ student.profile_image.url }}"
+                                                alt="Profile"
+                                                class="rounded-circle me-2"
+                                                width="40"
+                                                height="40"
+                                                style="object-fit: cover;"
+                                            >
+
+                                        {% else %}
+
+                                            <div
+                                                class="rounded-circle bg-primary
+                                                       text-white
+                                                       d-flex
+                                                       align-items-center
+                                                       justify-content-center
+                                                       me-2"
+                                                style="
+                                                    width:40px;
+                                                    height:40px;
+                                                    font-size:16px;
+                                                    font-weight:600;
+                                                "
+                                            >
+
+                                                {{ student.first_name|first|upper }}
+
+                                            </div>
+
+                                        {% endif %}
+
+
+
+                                        <!-- Name -->
+
+                                        <div>
+
+                                            <div class="fw-semibold">
+
+                                                {{ student.first_name }}
+                                                {{ student.last_name }}
+
+                                            </div>
+
+                                        </div>
+
+
+                                    </div>
+
+                                </td>
+
+
+
+                                <!-- ================================= -->
+                                <!-- EMAIL -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    {{ student.email }}
+
+                                </td>
+
+
+
+                                <!-- ================================= -->
+                                <!-- SESSION -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    {% if student.session %}
+
+                                        <span class="badge bg-info text-dark">
+
+                                            {{ student.session.year }}
+
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="text-muted">
+                                            No Session
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+
+                                <!-- ================================= -->
+                                <!-- GENDER -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    {% if student.gender %}
+
+                                        {{ student.get_gender_display }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                </td>
+
+
+
+                                <!-- ================================= -->
+                                <!-- STATUS -->
+                                <!-- ================================= -->
+
+                                <td>
+
+                                    {% if student.is_active %}
+
+                                        <span class="badge bg-success">
+                                            Active
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="badge bg-danger">
+                                            Inactive
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+
+                                <!-- ================================= -->
+                                <!-- ACTION -->
+                                <!-- ================================= -->
+
+                                <td class="text-center">
+
+                                    <div class="d-flex justify-content-center gap-2">
+
+
+                                        <!-- VIEW -->
+
+                                        <a
+                                            href="{% url 'admin_student_profile' student.id %}"
+                                            class="btn btn-sm btn-primary"
+                                            title="View Student Profile"
+                                        >
+                                            View
+                                        </a>
+
+
+
+                                        <!-- DELETE -->
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'admin_delete_student' student.id %}"
+                                            class="d-inline"
+                                            onsubmit="return confirm(
+                                                'Are you sure you want to delete this student? This action cannot be undone.'
+                                            );"
+                                        >
+
+                                            {% csrf_token %}
+
+                                            <button
+                                                type="submit"
+                                                class="btn btn-sm btn-outline-danger"
+                                                title="Delete Student"
+                                            >
+                                                🗑️ Delete
+                                            </button>
+
+                                        </form>
+
+
+                                    </div>
+
+                                </td>
+
+
+                            </tr>
+
+
+                        {% empty %}
+
+
+                            <!-- ================================= -->
+                            <!-- EMPTY -->
+                            <!-- ================================= -->
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center py-5"
+                                >
+
+                                    <div class="text-muted">
+
+                                        <div class="fs-1 mb-2">
+                                            👨‍🎓
+                                        </div>
+
+
+                                        <h6 class="fw-bold">
+                                            No Students Found
+                                        </h6>
+
+
+                                        <p class="small mb-0">
+                                            No students are available
+                                            for the selected session.
+                                        </p>
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                        {% endfor %}
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}

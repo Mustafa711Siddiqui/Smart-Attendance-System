@@ -1,0 +1,333 @@
+{% extends "index.html" %}
+
+{% block title %}
+Class Test Marks | {{ course.course_code }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Page Header -->
+    <div class="mb-4">
+
+        <a href="{% url 'teacher_course_detail' course.id %}"
+           class="btn btn-sm btn-outline-secondary mb-3">
+            ← Back to Course
+        </a>
+
+        <h2 class="fw-bold mb-1">
+            Class Test & Semester Marks
+        </h2>
+
+        <p class="text-muted mb-0">
+            {{ course.course_code }} -
+            {{ course.course_name }}
+            • Session {{ course.session.year }}
+        </p>
+
+    </div>
+
+
+    <!-- Messages -->
+    {% if messages %}
+
+        {% for message in messages %}
+
+            <div class="alert
+                {% if message.tags == 'error' %}
+                    alert-danger
+                {% elif message.tags == 'success' %}
+                    alert-success
+                {% else %}
+                    alert-info
+                {% endif %}
+                alert-dismissible fade show"
+                role="alert">
+
+                {{ message }}
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert">
+                </button>
+
+            </div>
+
+        {% endfor %}
+
+    {% endif %}
+
+
+    <!-- Marks Form -->
+    <form method="POST">
+
+        {% csrf_token %}
+
+        <div class="card border-0 shadow-sm">
+
+            <!-- Card Header -->
+            <div class="card-header bg-white py-3">
+
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                    <!-- Header Text -->
+                    <div>
+
+                        <h5 class="fw-bold mb-1">
+                            Student Marks
+                        </h5>
+
+                        <small class="text-muted">
+                            Enter CT-1, CT-2, CT-3 and Semester Marks
+                        </small>
+
+                    </div>
+
+
+                    <!-- Header Actions -->
+                    <div class="d-flex align-items-center gap-2 flex-wrap">
+
+                        <!-- Student Count -->
+                        <span class="badge bg-primary px-3 py-2">
+                            {{ students|length }} Students
+                        </span>
+
+
+                        <!-- Semester Set-wise Marks Button -->
+                        <a href="{% url 'teacher_semester_set_marks' course.id %}"
+                           class="btn btn-success">
+
+                            <i class="bi bi-list-check me-1"></i>
+                            Semester Set-wise Marks
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Card Body -->
+            <div class="card-body p-0">
+
+                {% if students %}
+
+                    <div class="table-responsive">
+
+                        <table class="table table-hover align-middle mb-0">
+
+                            <thead class="table-light">
+
+                                <tr>
+
+                                    <th class="ps-4">
+                                        Roll
+                                    </th>
+
+                                    <th>
+                                        Student
+                                    </th>
+
+                                    <th>
+                                        Username
+                                    </th>
+
+                                    <th>
+                                        CT-1
+                                        <br>
+                                        <small class="text-muted">
+                                            Out of 30
+                                        </small>
+                                    </th>
+
+                                    <th>
+                                        CT-2
+                                        <br>
+                                        <small class="text-muted">
+                                            Out of 30
+                                        </small>
+                                    </th>
+
+                                    <th>
+                                        CT-3
+                                        <br>
+                                        <small class="text-muted">
+                                            Out of 30
+                                        </small>
+                                    </th>
+
+                                    <th>
+                                        Semester Marks
+                                        <br>
+                                        <small class="text-muted">
+                                            Out of 70
+                                        </small>
+                                    </th>
+
+                                </tr>
+
+                            </thead>
+
+
+                            <tbody>
+
+                                {% for student in students %}
+
+                                    <tr>
+
+                                        <!-- Roll -->
+                                        <td class="ps-4">
+
+                                            <strong>
+                                                {{ student.roll }}
+                                            </strong>
+
+                                        </td>
+
+
+                                        <!-- Student Name -->
+                                        <td>
+
+                                            <strong>
+                                                {{ student.first_name }}
+                                                {{ student.last_name }}
+                                            </strong>
+
+                                        </td>
+
+
+                                        <!-- Username -->
+                                        <td>
+                                            {{ student.username }}
+                                        </td>
+
+
+                                        <!-- CT-1 -->
+                                        <td>
+
+                                            <input
+                                                type="number"
+                                                name="ct1_{{ student.id }}"
+                                                class="form-control"
+                                                placeholder="CT-1"
+                                                min="0"
+                                                max="30"
+                                                step="0.01"
+                                                value="{{ student.saved_marks.ct1|default_if_none:'' }}"
+                                            >
+
+                                        </td>
+
+
+                                        <!-- CT-2 -->
+                                        <td>
+
+                                            <input
+                                                type="number"
+                                                name="ct2_{{ student.id }}"
+                                                class="form-control"
+                                                placeholder="CT-2"
+                                                min="0"
+                                                max="30"
+                                                step="0.01"
+                                                value="{{ student.saved_marks.ct2|default_if_none:'' }}"
+                                            >
+
+                                        </td>
+
+
+                                        <!-- CT-3 -->
+                                        <td>
+
+                                            <input
+                                                type="number"
+                                                name="ct3_{{ student.id }}"
+                                                class="form-control"
+                                                placeholder="CT-3"
+                                                min="0"
+                                                max="30"
+                                                step="0.01"
+                                                value="{{ student.saved_marks.ct3|default_if_none:'' }}"
+                                            >
+
+                                        </td>
+
+
+                                        <!-- Semester Marks -->
+                                        <td>
+
+                                            <input
+                                                type="number"
+                                                name="semester_marks_{{ student.id }}"
+                                                class="form-control border-success"
+                                                placeholder="Out of 70"
+                                                min="0"
+                                                max="70"
+                                                step="0.01"
+                                                value="{{ student.saved_marks.semester_marks|default_if_none:'' }}"
+                                            >
+
+                                        </td>
+
+                                    </tr>
+
+                                {% endfor %}
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                {% else %}
+
+                    <!-- No Students -->
+                    <div class="text-center py-5">
+
+                        <div class="fs-1 mb-3">
+                            👨‍🎓
+                        </div>
+
+                        <h6 class="fw-bold">
+                            No Students Found
+                        </h6>
+
+                        <p class="text-muted mb-0">
+                            No students are enrolled in this session.
+                        </p>
+
+                    </div>
+
+                {% endif %}
+
+            </div>
+
+
+            <!-- Card Footer -->
+            {% if students %}
+
+                <div class="card-footer bg-white text-end py-3">
+
+                    <button
+                        type="submit"
+                        class="btn btn-success px-4">
+
+                        <i class="bi bi-save me-1"></i>
+                        Save Marks
+
+                    </button>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </form>
+
+</div>
+
+{% endblock %}

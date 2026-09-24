@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+
+{% block title %}
+Add Sub-question
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+   
+
+    <div class="card shadow-sm">
+
+        <div class="card-header bg-primary text-white">
+            <h4 class="mb-0">
+                Add Sub-question
+            </h4>
+        </div>
+
+        <div class="card-body">
+
+            <p class="text-muted">
+                Question Set:
+                <strong>{{ question_set.set_name }}</strong>
+            </p>
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <div class="mt-3">
+                    <button type="submit"
+                            class="btn btn-success">
+                        Save Sub-question
+                    </button>
+
+                    <a href="{% url 'semester_sub_question_list' question_set.id %}"
+                       class="btn btn-secondary">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

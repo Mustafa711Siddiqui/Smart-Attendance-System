@@ -1,0 +1,86 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Session {{ session.year }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Back Button -->
+    <a href="{% url 'teacher_dashboard' %}"
+       class="btn btn-secondary mb-4">
+        ← Back
+    </a>
+
+
+    <!-- Page Header -->
+    <div class="mb-4">
+
+        <h3 class="fw-bold">
+            Session {{ session.year }}
+        </h3>
+
+        <p class="text-muted mb-0">
+            Select a year to view semesters
+        </p>
+
+    </div>
+
+
+    <!-- Year Cards -->
+    <div class="row g-3">
+
+        {% for year in years %}
+
+            <div class="col-md-6 col-lg-3">
+
+                <div class="card shadow-sm border-0 h-100">
+
+                    <div class="card-body text-center">
+
+                        <div class="mb-3">
+                            <i class="bi bi-calendar3 fs-1 text-primary"></i>
+                        </div>
+
+                        <h5 class="fw-bold">
+                            {{ year }} Year
+                        </h5>
+
+                        <p class="text-muted small mb-0">
+                            View courses and semesters
+                        </p>
+
+                        <a href="{% url 'teacher_year_courses' session.id year %}"
+                           class="btn btn-primary mt-3">
+                            Open Year
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% empty %}
+
+            <div class="col-12">
+
+                <div class="alert alert-info text-center">
+
+                    <i class="bi bi-info-circle me-2"></i>
+
+                    No years available for this session.
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

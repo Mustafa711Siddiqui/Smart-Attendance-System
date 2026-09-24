@@ -1,0 +1,177 @@
+{% extends "index.html" %}
+
+{% block title %}
+{{ semester }} Semester | Teacher Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- ============================== -->
+    <!-- HEADER -->
+    <!-- ============================== -->
+
+    <div class="mb-4">
+
+        <a
+            href="{% url 'teacher_year_courses' session.id year %}"
+            class="btn btn-sm btn-outline-secondary mb-3"
+        >
+            ← Back to Semesters
+        </a>
+
+        <h2 class="fw-bold mb-1">
+            {{ semester }} Semester
+        </h2>
+
+        <p class="text-muted mb-0">
+            Session {{ session.year }}
+            • {{ year }} Year
+        </p>
+
+    </div>
+
+
+    <!-- ============================== -->
+    <!-- COURSES -->
+    <!-- ============================== -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h5 class="fw-bold mb-1">
+                        My Courses
+                    </h5>
+
+                    <small class="text-muted">
+                        Courses assigned to you
+                    </small>
+                </div>
+
+                <span class="badge bg-primary px-3 py-2">
+                    {{ courses|length }} Courses
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="card-body p-0">
+
+            {% if courses %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-hover align-middle mb-0">
+
+                        <thead class="table-light">
+
+                            <tr>
+
+                                <th class="ps-4">
+                                    #
+                                </th>
+
+                                <th>
+                                    Course Code
+                                </th>
+
+                                <th>
+                                    Course Name
+                                </th>
+
+                                <th>
+                                    Credit
+                                </th>
+
+                                <th class="text-end pe-4">
+                                    Action
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for course in courses %}
+
+                                <tr>
+
+                                    <td class="ps-4">
+                                        {{ forloop.counter }}
+                                    </td>
+
+
+                                    <td>
+
+                                        <span class="fw-semibold">
+                                            {{ course.course_code }}
+                                        </span>
+
+                                    </td>
+
+
+                                    <td>
+                                        {{ course.course_name }}
+                                    </td>
+
+
+                                    <td>
+                                        {{ course.credit }}
+                                    </td>
+
+
+                                    <td class="text-end pe-4">
+
+                                  <a href="{% url 'teacher_course_detail' course.id %}"
+                                    class="btn btn-sm btn-primary">
+                                        Open Course
+                                    </a>
+
+                                    </td>
+
+                                </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <div class="fs-1 mb-3">
+                        📚
+                    </div>
+
+                    <h6 class="fw-bold">
+                        No Courses Found
+                    </h6>
+
+                    <p class="text-muted mb-0">
+                        No courses are assigned for this semester.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

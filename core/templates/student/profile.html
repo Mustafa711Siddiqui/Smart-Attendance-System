@@ -1,0 +1,888 @@
+{% extends "index.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-lg-8">
+
+            <!-- =========================
+                 PROFILE CARD
+            ========================== -->
+
+            <div class="card shadow-sm border-0">
+
+                <!-- Header -->
+                <div class="card-header bg-primary text-white
+                            d-flex justify-content-between align-items-center">
+
+                    <h4 class="mb-0">
+                        👤 My Profile
+                    </h4>
+
+                    <!-- Edit Button -->
+                    <button type="button"
+                            id="editButton"
+                            class="btn btn-light btn-sm"
+                            onclick="enableEdit()">
+
+                        ✏️ Edit Profile
+
+                    </button>
+
+                </div>
+
+
+                <div class="card-body p-4">
+
+                    <!-- =========================
+                         MESSAGES
+                    ========================== -->
+
+                    {% if messages %}
+
+                        {% for message in messages %}
+
+                            <div class="alert alert-{{ message.tags }}">
+                                {{ message }}
+                            </div>
+
+                        {% endfor %}
+
+                    {% endif %}
+
+
+                    <!-- =========================
+                         PROFILE PHOTO
+                    ========================== -->
+
+                    <div class="text-center mb-4">
+
+                        {% if student.profile_image %}
+
+                            <img src="{{ student.profile_image.url }}"
+                                 class="rounded-circle border shadow-sm"
+                                 width="140"
+                                 height="140"
+                                 style="object-fit: cover;">
+
+                        {% else %}
+
+                            <div class="rounded-circle bg-light border
+                                        d-flex align-items-center
+                                        justify-content-center mx-auto"
+                                 style="width:140px;height:140px;">
+
+                                <span style="font-size:60px;">
+                                    👤
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <!-- =========================
+                         VIEW MODE
+                    ========================== -->
+
+                    <div id="viewMode">
+
+                        <!-- Name -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Full Name
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {{ student.first_name }}
+                                {{ student.last_name }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Email -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Email
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {{ student.email }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Roll -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Roll Number
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {% if student.roll %}
+                                    {{ student.roll }}
+                                {% else %}
+                                    <span class="text-muted">
+                                        Not set
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Session -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Session
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {% if student.session %}
+                                    {{ student.session }}
+                                {% else %}
+                                    <span class="text-muted">
+                                        Not assigned
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Gender -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Gender
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {% if student.gender %}
+                                    {{ student.gender }}
+                                {% else %}
+                                    <span class="text-muted">
+                                        Not set
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Date of Birth -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Date of Birth
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {% if student.date_of_birth %}
+                                    {{ student.date_of_birth }}
+                                {% else %}
+                                    <span class="text-muted">
+                                        Not set
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Address -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Address
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {% if student.address %}
+                                    {{ student.address }}
+                                {% else %}
+                                    <span class="text-muted">
+                                        Not set
+                                    </span>
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Face Lock Status -->
+                        <div class="row mb-3">
+
+                            <div class="col-sm-4 fw-semibold">
+                                Face Lock
+                            </div>
+
+                            <div class="col-sm-8">
+
+                                {% if student.face_image %}
+
+                                    <span class="badge bg-success">
+                                        ✓ Face Lock Active
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-warning text-dark">
+                                        Not Set
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- =========================
+                         EDIT MODE
+                    ========================== -->
+
+                    <div id="editMode" style="display:none;">
+
+                        <form method="post"
+                              enctype="multipart/form-data">
+
+                            {% csrf_token %}
+
+
+                            <!-- First Name -->
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    First Name
+                                </label>
+
+                                {{ form.first_name }}
+
+                                {% for error in form.first_name.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Last Name -->
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Last Name
+                                </label>
+
+                                {{ form.last_name }}
+
+                                {% for error in form.last_name.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Roll -->
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Roll Number
+                                </label>
+
+                                {{ form.roll }}
+
+                                <div class="form-text">
+                                    Enter your roll number.
+                                </div>
+
+                                {% for error in form.roll.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Gender -->
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Gender
+                                </label>
+
+                                {{ form.gender }}
+
+                                {% for error in form.gender.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Date of Birth -->
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Date of Birth
+                                </label>
+
+                                {{ form.date_of_birth }}
+
+                                {% for error in form.date_of_birth.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Address -->
+                            <div class="mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Address
+                                </label>
+
+                                {{ form.address }}
+
+                                {% for error in form.address.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- Profile Image -->
+                            <div class="mb-4">
+
+                                <label class="form-label fw-semibold">
+                                    Profile Image
+                                </label>
+
+                                {{ form.profile_image }}
+
+                                {% for error in form.profile_image.errors %}
+
+                                    <div class="text-danger small">
+                                        {{ error }}
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+
+                            <!-- =========================
+                                 FACE LOCK
+                            ========================== -->
+
+                            <div class="card border-warning mb-4">
+
+                                <div class="card-header bg-warning-subtle">
+
+                                    <h5 class="mb-0">
+                                        🔐 Face Lock
+                                    </h5>
+
+                                </div>
+
+
+                                <div class="card-body">
+
+                                    {% if student.face_image %}
+
+                                        <div class="text-center mb-3">
+
+                                            <img src="{{ student.face_image.url }}"
+                                                 class="img-thumbnail"
+                                                 style="
+                                                    width:180px;
+                                                    height:180px;
+                                                    object-fit:cover;
+                                                 ">
+
+                                            <p class="text-success
+                                                      fw-semibold mt-2">
+
+                                                ✓ Face Lock is set
+
+                                            </p>
+
+                                        </div>
+
+                                    {% endif %}
+
+
+                                    <!-- Camera -->
+                                    <div id="cameraSection"
+                                         class="text-center mb-3"
+                                         style="display:none;">
+
+                                        <video id="camera"
+                                               autoplay
+                                               playsinline
+                                               class="rounded border"
+                                               style="
+                                                    width:100%;
+                                                    max-width:400px;
+                                                    height:300px;
+                                                    object-fit:cover;
+                                               ">
+                                        </video>
+
+                                        <br>
+
+                                        <button type="button"
+                                                class="btn btn-success mt-2"
+                                                onclick="captureFace()">
+
+                                            📸 Capture Face
+
+                                        </button>
+
+                                        <button type="button"
+                                                class="btn btn-secondary mt-2"
+                                                onclick="stopCamera()">
+
+                                            ✖ Close Camera
+
+                                        </button>
+
+                                    </div>
+
+
+                                    <!-- Captured Preview -->
+                                    <div id="previewSection"
+                                         class="text-center mb-3"
+                                         style="display:none;">
+
+                                        <img id="facePreview"
+                                             class="rounded border"
+                                             style="
+                                                width:200px;
+                                                height:200px;
+                                                object-fit:cover;
+                                             ">
+
+                                        <br>
+
+                                        <button type="button"
+                                                class="btn btn-secondary mt-2"
+                                                onclick="retakeFace()">
+
+                                            🔄 Retake
+
+                                        </button>
+
+                                    </div>
+
+
+                                    <!-- Camera + Upload -->
+                                    <div class="d-flex gap-2 mb-3">
+
+                                        <button type="button"
+                                                class="btn btn-primary"
+                                                onclick="openCamera()">
+
+                                            📷 Capture from Camera
+
+                                        </button>
+
+
+                                        <label class="btn btn-outline-primary mb-0">
+
+                                            🖼️ Upload Photo
+
+                                            {{ form.face_image }}
+
+                                        </label>
+
+                                    </div>
+
+
+                                    <div class="form-text">
+
+                                        Take or upload a clear
+                                        front-facing photo.
+                                        Your face should be clearly visible.
+
+                                    </div>
+
+
+                                    {% for error in form.face_image.errors %}
+
+                                        <div class="text-danger small">
+                                            {{ error }}
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- =========================
+                                 SAVE / CANCEL
+                            ========================== -->
+
+                            <div class="d-flex
+                                        justify-content-between">
+
+                                <button type="button"
+                                        class="btn btn-secondary"
+                                        onclick="cancelEdit()">
+
+                                    ← Cancel
+
+                                </button>
+
+
+                                <button type="submit"
+                                        class="btn btn-success px-4">
+
+                                    💾 Save Changes
+
+                                </button>
+
+                            </div>
+
+                        </form>
+
+                    </div>
+
+
+                    <!-- =========================
+                         BACK BUTTON
+                    ========================== -->
+
+                    <div id="backButton"
+                         class="mt-4">
+
+                        <a href="{% url 'student_dashboard' %}"
+                           class="btn btn-secondary">
+
+                            ← Back to Dashboard
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     JAVASCRIPT
+========================================= -->
+
+<script>
+
+let stream = null;
+
+
+/* =========================
+   ENABLE EDIT
+========================= */
+
+function enableEdit() {
+
+    document.getElementById("viewMode")
+        .style.display = "none";
+
+    document.getElementById("editMode")
+        .style.display = "block";
+
+    document.getElementById("editButton")
+        .style.display = "none";
+
+    document.getElementById("backButton")
+        .style.display = "none";
+}
+
+
+/* =========================
+   CANCEL EDIT
+========================= */
+
+function cancelEdit() {
+
+    stopCamera();
+
+    document.getElementById("editMode")
+        .style.display = "none";
+
+    document.getElementById("viewMode")
+        .style.display = "block";
+
+    document.getElementById("editButton")
+        .style.display = "inline-block";
+
+    document.getElementById("backButton")
+        .style.display = "block";
+
+}
+
+
+/* =========================
+   OPEN CAMERA
+========================= */
+
+function openCamera() {
+
+    const cameraSection =
+        document.getElementById("cameraSection");
+
+    cameraSection.style.display = "block";
+
+
+    navigator.mediaDevices.getUserMedia({
+
+        video: {
+            facingMode: "user"
+        },
+
+        audio: false
+
+    })
+
+    .then(function(cameraStream) {
+
+        stream = cameraStream;
+
+        const video =
+            document.getElementById("camera");
+
+        video.srcObject = stream;
+
+    })
+
+    .catch(function(error) {
+
+        alert(
+            "Camera access denied or unavailable."
+        );
+
+        console.error(error);
+
+    });
+
+}
+
+
+/* =========================
+   CAPTURE FACE
+========================= */
+
+function captureFace() {
+
+    const video =
+        document.getElementById("camera");
+
+
+    if (!video.videoWidth) {
+
+        alert(
+            "Camera is not ready yet."
+        );
+
+        return;
+
+    }
+
+
+    const canvas =
+        document.createElement("canvas");
+
+
+    canvas.width =
+        video.videoWidth;
+
+    canvas.height =
+        video.videoHeight;
+
+
+    const context =
+        canvas.getContext("2d");
+
+
+    context.drawImage(
+        video,
+        0,
+        0,
+        canvas.width,
+        canvas.height
+    );
+
+
+    canvas.toBlob(function(blob) {
+
+        const file =
+            new File(
+                [blob],
+                "face_lock.jpg",
+                {
+                    type: "image/jpeg"
+                }
+            );
+
+
+        const dataTransfer =
+            new DataTransfer();
+
+
+        dataTransfer.items.add(file);
+
+
+        const input =
+            document.getElementById(
+                "id_face_image"
+            );
+
+
+        input.files =
+            dataTransfer.files;
+
+
+        /* Preview */
+
+        const preview =
+            document.getElementById(
+                "facePreview"
+            );
+
+
+        preview.src =
+            URL.createObjectURL(blob);
+
+
+        document.getElementById(
+            "cameraSection"
+        ).style.display = "none";
+
+
+        document.getElementById(
+            "previewSection"
+        ).style.display = "block";
+
+
+        stopCamera();
+
+    }, "image/jpeg", 0.9);
+
+}
+
+
+/* =========================
+   RETAKE
+========================= */
+
+function retakeFace() {
+
+    document.getElementById(
+        "previewSection"
+    ).style.display = "none";
+
+    openCamera();
+
+}
+
+
+/* =========================
+   STOP CAMERA
+========================= */
+
+function stopCamera() {
+
+    if (stream) {
+
+        stream.getTracks().forEach(
+            function(track) {
+
+                track.stop();
+
+            }
+        );
+
+        stream = null;
+
+    }
+
+
+    const camera =
+        document.getElementById("camera");
+
+    if (camera) {
+
+        camera.srcObject = null;
+
+    }
+
+
+    document.getElementById(
+        "cameraSection"
+    ).style.display = "none";
+
+}
+
+</script>
+
+{% endblock %}

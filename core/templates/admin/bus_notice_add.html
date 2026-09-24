@@ -1,0 +1,136 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Add Bus Notice
+{% endblock %}
+
+{% block content %}
+
+<div style="background-color: #51c0f8; border-color: #f3edf3; color: #f7eaea; min-hight: 100vh; padding:20px">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3 class="mb-1">Add Bus Notice</h3>
+            <p class="mb-0" style="background-color: #51c0f8; border-color: #f3edf3; color: #f7eaea;">
+                Send a bus-related notice to teachers and students
+            </p>
+        </div>
+
+        <a href="{% url 'admin_bus_notice_list' %}"
+           class="btn" style="background-color: #ed1c1c; border-color: #0b0a0b; color: #eae2e2;">
+            ← Back
+        </a>
+    </div>
+
+
+    <!-- Form -->
+    <div class="card shadow-sm border-0" style="background-color: #ffcccc; border-color: #0b0a0b; color: #e41414;">
+
+        <div class="card-body p-4">
+
+            <form method="POST"
+                  enctype="multipart/form-data">
+
+                {% csrf_token %}
+
+
+                <!-- Title -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Title
+                    </label>
+
+                    <input type="text"
+                           name="title"
+                           class="form-control"
+                           placeholder="Enter bus notice title"
+                           required>
+
+                </div>
+
+
+                <!-- Message -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        Message
+                    </label>
+
+                    <textarea name="message"
+                              class="form-control"
+                              rows="6"
+                              placeholder="Write your bus notice..."
+                              required></textarea>
+
+                </div>
+
+
+                <!-- PDF -->
+                <div class="mb-3">
+
+                    <label class="form-label fw-semibold">
+                        PDF File
+                    </label>
+
+                    <input type="file"
+                           name="pdf_file"
+                           class="form-control"
+                           accept=".pdf">
+
+                    <small class="text-muted">
+                        Optional
+                    </small>
+
+                </div>
+
+
+                <!-- Image -->
+                <div class="mb-4">
+
+                    <label class="form-label fw-semibold">
+                        Image
+                    </label>
+
+                    <input type="file"
+                           name="image"
+                           class="form-control"
+                           accept="image/*">
+
+                    <small class="text-muted">
+                        Optional
+                    </small>
+
+                </div>
+
+
+                <!-- Submit -->
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+
+                        Publish Bus Notice
+
+                    </button>
+
+                    <a href="{% url 'admin_bus_notice_list' %}"
+                       class="btn btn-outline-secondary">
+
+                        Cancel
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

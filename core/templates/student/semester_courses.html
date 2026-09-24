@@ -1,0 +1,598 @@
+{% extends "index.html" %}
+
+{% block title %}
+    {{ semester }} Semester | My Courses
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* ============================================================
+   PAGE
+============================================================ */
+
+.courses-page {
+    width: 100%;
+}
+
+
+/* ============================================================
+   PAGE HEADER
+============================================================ */
+
+.page-header {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    padding: 22px 24px;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    font-size: 13px;
+}
+
+.page-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.page-subtitle {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   COURSE CARD
+============================================================ */
+
+.course-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.course-card-header {
+    padding: 18px 22px;
+    border-bottom: 1px solid #e5e7eb;
+    background: #ffffff;
+}
+
+
+/* ============================================================
+   TABLE
+============================================================ */
+
+.course-table {
+    margin-bottom: 0;
+}
+
+.course-table thead th {
+    background: #f8fafc;
+    color: #374151;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+    padding: 13px 12px;
+    border-bottom: 1px solid #e5e7eb;
+    white-space: nowrap;
+}
+
+.course-table tbody td {
+    padding: 14px 12px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.course-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.course-table tbody tr {
+    transition: background 0.15s ease;
+}
+
+.course-table tbody tr:hover {
+    background: #f9fafb;
+}
+
+
+/* ============================================================
+   COURSE NUMBER
+============================================================ */
+
+.course-number {
+    width: 38px;
+    height: 38px;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #f3f4f6;
+    color: #374151;
+
+    font-size: 13px;
+    font-weight: 700;
+}
+
+
+/* ============================================================
+   COURSE CODE
+============================================================ */
+
+.course-code {
+    font-weight: 700;
+    color: #111827;
+    white-space: nowrap;
+}
+
+
+/* ============================================================
+   COURSE NAME
+============================================================ */
+
+.course-name {
+    font-weight: 500;
+    color: #374151;
+}
+
+
+/* ============================================================
+   CREDIT
+============================================================ */
+
+.credit-badge {
+    display: inline-block;
+
+    min-width: 42px;
+
+    padding: 5px 9px;
+
+    border-radius: 20px;
+
+    background: #eef2ff;
+    color: #4338ca;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* ============================================================
+   TEACHER
+============================================================ */
+
+.teacher-name {
+    color: #374151;
+    font-size: 13px;
+}
+
+.teacher-icon {
+    margin-right: 5px;
+}
+
+
+/* ============================================================
+   ATTENDANCE BUTTON
+============================================================ */
+
+.attendance-btn {
+    min-width: 120px;
+
+    border-radius: 7px;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    padding: 7px 12px;
+}
+
+.attendance-btn:hover {
+    transform: translateY(-1px);
+}
+
+
+/* ============================================================
+   EMPTY STATE
+============================================================ */
+
+.empty-state {
+    padding: 65px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 46px;
+    margin-bottom: 14px;
+}
+
+.empty-title {
+    font-weight: 700;
+    color: #374151;
+}
+
+.empty-text {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* ============================================================
+   MOBILE
+============================================================ */
+
+@media (max-width: 768px) {
+
+    .page-header {
+        padding: 17px;
+    }
+
+    .page-title {
+        font-size: 20px;
+    }
+
+    .course-card-header {
+        padding: 16px;
+    }
+
+    .course-table thead th {
+        font-size: 11px;
+    }
+
+    .course-table tbody td {
+        padding: 11px 9px;
+        font-size: 13px;
+    }
+
+    .attendance-btn {
+        min-width: 105px;
+        padding: 6px 9px;
+    }
+
+}
+
+</style>
+
+
+<div class="container-fluid py-4 courses-page">
+
+
+    <!-- ========================================================
+         PAGE HEADER
+    ========================================================= -->
+
+    <div class="page-header">
+
+        <a
+            href="{% url 'student_year_courses' session.id year %}"
+            class="btn btn-sm btn-outline-secondary back-btn mb-3"
+        >
+            ← Back to Semesters
+        </a>
+
+
+        <div class="d-flex flex-wrap justify-content-between align-items-end">
+
+            <div>
+
+                <div class="page-title mb-1">
+
+                    📚 {{ semester }} Semester
+
+                </div>
+
+                <div class="page-subtitle">
+
+                    Session {{ session.year }}
+
+                    <span class="mx-1">•</span>
+
+                    {{ year }} Year
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ========================================================
+         COURSES CARD
+    ========================================================= -->
+
+    <div class="course-card">
+
+
+        <!-- CARD HEADER -->
+
+        <div class="course-card-header">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+
+                        My Courses
+
+                    </h5>
+
+                    <small class="text-muted">
+
+                        Courses available for this semester
+
+                    </small>
+
+                </div>
+
+
+                <span class="badge bg-primary px-3 py-2">
+
+                    {{ courses|length }}
+
+                    {% if courses|length == 1 %}
+                        Course
+                    {% else %}
+                        Courses
+                    {% endif %}
+
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- ====================================================
+             COURSE LIST
+        ===================================================== -->
+
+        <div class="card-body p-0">
+
+
+            {% if courses %}
+
+
+                <div class="table-responsive">
+
+
+                    <table class="table course-table align-middle">
+
+
+                        <!-- ==================================================
+                             TABLE HEADER
+                        ================================================== -->
+
+                        <thead>
+
+                            <tr>
+
+                                <th
+                                    class="ps-4"
+                                    style="width: 60px;"
+                                >
+                                    #
+                                </th>
+
+                                <th>
+                                    Course Code
+                                </th>
+
+                                <th>
+                                    Course Name
+                                </th>
+
+                                <th class="text-center">
+                                    Credit
+                                </th>
+
+                                <th>
+                                    Teacher
+                                </th>
+
+                                <th class="text-center pe-4">
+                                    Attendance
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <!-- ==================================================
+                             TABLE BODY
+                        ================================================== -->
+
+                        <tbody>
+
+
+                            {% for course in courses %}
+
+
+                                <tr>
+
+
+                                    <!-- NUMBER -->
+
+                                    <td class="ps-4">
+
+                                        <span class="course-number">
+
+                                            {{ forloop.counter }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- COURSE CODE -->
+
+                                    <td>
+
+                                        <span class="course-code">
+
+                                            {{ course.course_code }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- COURSE NAME -->
+
+                                    <td>
+
+                                        <span class="course-name">
+
+                                            {{ course.course_name }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- CREDIT -->
+
+                                    <td class="text-center">
+
+                                        <span class="credit-badge">
+
+                                            {{ course.credit }}
+
+                                        </span>
+
+                                    </td>
+
+
+                                    <!-- TEACHER -->
+
+                                    <td>
+
+                                        {% if course.teacher %}
+
+                                            <span class="teacher-name">
+
+                                                <span class="teacher-icon">
+                                                    👨‍🏫
+                                                </span>
+
+                                                {{ course.teacher.first_name }}
+
+                                                {% if course.teacher.last_name %}
+
+                                                    {{ course.teacher.last_name }}
+
+                                                {% endif %}
+
+                                            </span>
+
+                                        {% else %}
+
+                                            <span class="text-muted">
+
+                                                —
+
+                                            </span>
+
+                                        {% endif %}
+
+                                    </td>
+
+
+                                    <!-- ==================================================
+                                         ATTENDANCE
+                                    =================================================== -->
+
+                                    <td class="text-center pe-4">
+
+    <div class="d-flex justify-content-center gap-2">
+
+        <!-- View Attendance -->
+        <a
+            href="{% url 'student_course_attendance_history' course.id %}"
+            class="btn btn-sm btn-outline-success"
+        >
+            📊 View
+        </a>
+
+        <!-- Give Attendance -->
+        <a
+            href="{% url 'student_course_attendance' course.id %}"
+            class="btn btn-sm btn-outline-primary"
+        >
+            📋 Attend
+        </a>
+
+    </div>
+
+</td>
+
+
+                                </tr>
+
+
+                            {% endfor %}
+
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+
+            {% else %}
+
+
+                <!-- ==================================================
+                     EMPTY STATE
+                =================================================== -->
+
+                <div class="empty-state">
+
+
+                    <div class="empty-icon">
+
+                        📚
+
+                    </div>
+
+
+                    <h5 class="empty-title">
+
+                        No Courses Found
+
+                    </h5>
+
+
+                    <p class="empty-text mb-0">
+
+                        No courses are available for this semester.
+
+                    </p>
+
+
+                </div>
+
+
+            {% endif %}
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

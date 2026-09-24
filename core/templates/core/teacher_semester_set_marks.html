@@ -1,0 +1,81 @@
+{% extends "index.html" %}
+
+{% block title %}
+Semester Marks - {{ course.course_code }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <a href="{% url 'teacher_course_detail' course.id %}" class="btn btn-sm btn-outline-secondary mb-3">
+            ← Back to Course
+        </a>
+
+        <h2 class="fw-bold mb-1">Semester Marks - {{ course.course_code }}</h2>
+
+        <p class="text-muted mb-0">
+            {{ course.course_name }} • Session {{ course.session.year }}
+        </p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    {% if not pattern %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-body text-center py-5">
+                <div class="fs-1 mb-3">📋</div>
+                <h5 class="fw-bold">No Semester Pattern Found</h5>
+                <p class="text-muted mb-3">Create a semester question pattern and sets before entering marks.</p>
+                <a href="{% url 'teacher_course_detail' course.id %}" class="btn btn-secondary">Back to Course</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <h5 class="fw-bold mb-1">Semester Marks</h5>
+                <small class="text-muted">Select a student to open their semester sets.</small>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 80px;">Roll</th>
+                                <th>Student Name</th>
+                                <th>Username</th>
+                                <th style="width: 150px;" class="text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student in students %}
+                                <tr>
+                                    <td><strong>{{ student.roll|default:"-" }}</strong></td>
+                                    <td>{{ student.get_full_name|default:student.username }}</td>
+                                    <td>{{ student.username }}</td>
+                                    <td class="text-center">
+                                        <a href="{% url 'teacher_semester_student_sets' course.id student.id %}" class="btn btn-primary btn-sm px-3">
+                                            Open
+                                        </a>
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="4" class="text-center text-muted py-5">No students found for this course session.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

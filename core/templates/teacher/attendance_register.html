@@ -1,0 +1,1031 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Attendance Register - {{ course.course_code }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .attendance-wrapper {
+        width: 100%;
+    }
+
+    .course-header {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        border: 1px solid #dee2e6;
+    }
+
+    .register-container {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: auto;
+        max-height: 75vh;
+        border: 1px solid #dee2e6;
+        border-radius: 10px;
+        background: white;
+    }
+
+    .attendance-table {
+        border-collapse: separate;
+        border-spacing: 0;
+        min-width: max-content;
+        width: 100%;
+    }
+
+    .attendance-table th,
+    .attendance-table td {
+        border: 1px solid #dee2e6;
+        text-align: center;
+        vertical-align: middle;
+        padding: 8px;
+        white-space: nowrap;
+    }
+
+    /* =========================
+       HEADER
+    ========================= */
+
+    .attendance-table thead th {
+        background: #212529;
+        color: white;
+        position: sticky;
+        top: 0;
+        z-index: 20;
+    }
+
+    .class-header {
+        min-width: 125px;
+    }
+
+    /* =========================
+       STUDENT COLUMN
+    ========================= */
+
+    .student-column {
+        min-width: 220px;
+        width: 220px;
+    }
+
+    .sticky-student {
+        position: sticky !important;
+        left: 0;
+        z-index: 30 !important;
+        background: #212529 !important;
+    }
+
+    .student-cell {
+        position: sticky;
+        left: 0;
+        z-index: 10;
+        background: white;
+        text-align: left !important;
+        font-weight: 500;
+    }
+
+    .student-name {
+        font-weight: 600;
+    }
+
+    .student-roll {
+        font-size: 12px;
+        color: #6c757d;
+    }
+
+    /* =========================
+       DATE AREA
+    ========================= */
+
+    .date-cell {
+        background: #f8f9fa;
+        padding: 8px !important;
+    }
+
+    .date-input {
+        width: 110px;
+        font-size: 12px;
+        padding: 4px 6px;
+    }
+
+    .date-form {
+        margin: 0;
+    }
+
+    .clear-btn {
+        font-size: 11px;
+        padding: 3px 7px;
+    }
+
+    /* =========================
+       ATTENDANCE CELLS
+    ========================= */
+
+    .attendance-cell {
+        min-width: 125px;
+    }
+
+    .attendance-actions {
+        display: flex;
+        justify-content: center;
+        gap: 4px;
+    }
+
+    .attendance-actions form {
+        display: inline-block;
+        margin: 0;
+    }
+
+    .present-btn,
+    .absent-btn {
+        min-width: 38px;
+    }
+
+    .present-mark {
+        font-size: 22px;
+        font-weight: bold;
+        color: #198754;
+    }
+
+    .absent-mark {
+        font-size: 22px;
+        font-weight: bold;
+        color: #dc3545;
+    }
+
+    /* =========================
+       SUMMARY
+    ========================= */
+
+    .summary-column {
+        min-width: 90px;
+    }
+
+    .percentage-badge {
+        font-size: 12px;
+    }
+
+    /* =========================
+       START BUTTON
+    ========================= */
+
+    .start-btn {
+        font-size: 11px;
+        padding: 4px 9px;
+    }
+
+    .active-badge {
+        font-size: 11px;
+    }
+
+    /* =========================
+       LEGEND
+    ========================= */
+
+    .legend-box {
+        background: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 10px 15px;
+        margin-bottom: 15px;
+    }
+
+    .legend-item {
+        display: inline-flex;
+        align-items: center;
+        margin-right: 18px;
+        font-size: 14px;
+    }
+
+    /* =========================
+       MOBILE
+    ========================= */
+
+    @media (max-width: 768px) {
+
+        .student-column {
+            min-width: 170px;
+            width: 170px;
+        }
+
+        .class-header,
+        .attendance-cell {
+            min-width: 110px;
+        }
+
+        .course-header {
+            padding: 15px;
+        }
+
+    }
+
+</style>
+
+
+<div class="container-fluid py-4 attendance-wrapper">
+
+    <!-- =====================================================
+         COURSE HEADER
+    ====================================================== -->
+
+    <div class="course-header">
+         <a
+            href="{% url 'teacher_create_attendance_classes' course.id %}"
+            class="btn btn-secondary mb-3">
+
+            ← Back
+
+        </a>
+
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center">
+
+            <div>
+
+                <h3 class="mb-1">
+                    📋 Attendance Register
+                </h3>
+
+                <div class="text-muted">
+
+                    <strong>
+                        {{ course.course_code }}
+                    </strong>
+
+                    —
+                    {{ course.course_name }}
+
+                </div>
+
+                <div class="small text-muted mt-1">
+
+                    Session:
+                    <strong>
+                        {{ course.session }}
+                    </strong>
+
+                    {% if course.year %}
+                        | Year:
+                        <strong>
+                            {{ course.year }}
+                        </strong>
+                    {% endif %}
+
+                    {% if course.semester %}
+                        | Semester:
+                        <strong>
+                            {{ course.semester }}
+                        </strong>
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+
+            <!-- Total Classes -->
+
+            <div class="text-center mt-3 mt-md-0">
+
+                <div class="text-muted small">
+                    Total Classes Held
+                </div>
+
+                <div class="fs-3 fw-bold">
+
+                    {{ total_classes }}
+
+                    <span class="text-muted fs-6">
+                        / 39
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =====================================================
+         LEGEND
+    ====================================================== -->
+
+    <div class="legend-box">
+
+        <span class="legend-item">
+
+            <span class="text-success fw-bold me-1">
+                ✓
+            </span>
+
+            Present
+
+        </span>
+
+
+        <span class="legend-item">
+
+            <span class="text-danger fw-bold me-1">
+                X
+            </span>
+
+            Absent
+
+        </span>
+
+
+        <span class="legend-item">
+
+            <span class="text-muted fw-bold me-1">
+                —
+            </span>
+
+            Not Marked
+
+        </span>
+
+
+        <span class="legend-item">
+
+            <span class="text-warning fw-bold me-1">
+                Not Held
+            </span>
+
+            Class not held
+
+        </span>
+
+
+        <span class="legend-item">
+
+            <span class="text-primary fw-bold me-1">
+                ▶
+            </span>
+
+            Start Attendance
+
+        </span>
+
+    </div>
+
+
+    <!-- =====================================================
+         REGISTER TABLE
+    ====================================================== -->
+
+    <div class="register-container" id="registerContainer">
+
+        <table class="table attendance-table mb-0">
+
+            <!-- =================================================
+                 TABLE HEADER
+            ================================================== -->
+
+            <thead>
+
+                <!-- TOP HEADER -->
+
+                <tr>
+
+                    <th
+                        rowspan="2"
+                        class="student-column sticky-student"
+                    >
+                        Student
+                    </th>
+
+
+                    <!-- ==============================
+                         CLASS COLUMNS
+                    =============================== -->
+
+                    {% for attendance in attendance_sessions %}
+
+                    <th
+                        class="class-header"
+                    >
+
+                        <div class="fw-bold">
+
+                            C{{ attendance.class_number }}
+
+                        </div>
+
+
+                        <!-- Held / Not Held -->
+
+                        <div class="small fw-normal mt-1">
+
+                            {% if attendance.is_held %}
+
+                                <span class="text-success">
+                                    Held
+                                </span>
+
+                            {% else %}
+
+                                <span class="text-warning">
+                                    Not Held
+                                </span>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ==========================
+                             START ATTENDANCE
+                        =========================== -->
+
+                        {% if attendance.is_held %}
+
+                            {% if attendance.is_active %}
+
+                                <span class="badge bg-success active-badge mt-2">
+                                    ● Active
+                                </span>
+
+                                <a
+                                    href="{% url 'teacher_start_attendance' attendance.id %}"
+                                    class="btn btn-sm btn-primary start-btn mt-2"
+                                >
+                                    see Code
+                                </a>
+
+                            {% else %}
+
+                                <a
+                                    href="{% url 'teacher_start_attendance' attendance.id %}"
+                                    class="btn btn-sm btn-primary start-btn mt-2"
+                                    data-network-start="true"
+                                    data-csrf-token="{{ csrf_token }}"
+                                >
+                                    ▶ Start
+                                </a>
+
+                                <div
+                                    class="network-status small mt-2"
+                                    role="alert"
+                                ></div>
+
+                            {% endif %}
+
+                        {% endif %}
+
+                    </th>
+
+                    {% endfor %}
+
+
+                    <!-- ==============================
+                         SUMMARY COLUMNS
+                    =============================== -->
+
+                    <th
+                        rowspan="2"
+                        class="summary-column"
+                    >
+                        Present
+                    </th>
+
+                    <th
+                        rowspan="2"
+                        class="summary-column"
+                    >
+                        Absent
+                    </th>
+
+                    <th
+                        rowspan="2"
+                        class="summary-column"
+                    >
+                        Attendance %
+                    </th>
+
+                </tr>
+
+
+                <!-- =================================================
+                     DATE ROW
+                ================================================== -->
+
+                <tr>
+
+                    {% for attendance in attendance_sessions %}
+
+                    <th class="date-cell">
+
+                        <form
+                            method="post"
+                            action="{% url 'teacher_set_attendance_date' attendance.id %}"
+                            class="date-form"
+                        >
+
+                            {% csrf_token %}
+
+                            <input
+                                type="date"
+                                name="date"
+                                value="{% if attendance.date %}{{ attendance.date|date:'Y-m-d' }}{% endif %}"
+                                class="form-control form-control-sm date-input"
+                                onchange="this.form.submit()"
+                            >
+
+
+                            <!-- Clear Date -->
+
+                            {% if attendance.is_held %}
+
+                                <button
+                                    type="submit"
+                                    name="date"
+                                    value=""
+                                    class="btn btn-sm btn-outline-danger clear-btn mt-1"
+                                    onclick="return confirm('Clear this class date and all attendance records?');"
+                                >
+                                    Clear
+                                </button>
+
+                            {% endif %}
+
+                        </form>
+
+                    </th>
+
+                    {% endfor %}
+
+                </tr>
+
+            </thead>
+
+
+            <!-- =====================================================
+                 STUDENT ROWS
+            ====================================================== -->
+
+            <tbody>
+
+                {% for row in register %}
+
+                <tr>
+
+                    <!-- ==============================
+                         STUDENT
+                    =============================== -->
+
+                    <td class="student-cell">
+
+                        <div class="student-name">
+
+                            {{ row.student.first_name }}
+
+                            {% if row.student.last_name %}
+                                {{ row.student.last_name }}
+                            {% endif %}
+
+                        </div>
+
+                        <div class="student-roll">
+
+                            Roll:
+                            {% if row.student.roll %}
+                                {{ row.student.roll }}
+                            {% else %}
+                                —
+                            {% endif %}
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- ==============================
+                         ATTENDANCE CELLS
+                    =============================== -->
+
+                    {% for cell in row.cells %}
+
+                    <td class="attendance-cell">
+
+                        {% if cell.attendance.is_held %}
+
+                            <!-- =================================
+                                 PRESENT
+                            ================================== -->
+
+                            {% if cell.status == "present" %}
+
+                                <div class="present-mark">
+                                    ✓
+                                </div>
+
+                                <div class="attendance-actions mt-1">
+
+                                    <form method="post">
+
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="attendance_id"
+                                            value="{{ cell.attendance.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="student_id"
+                                            value="{{ row.student.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="absent"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-danger"
+                                            title="Mark Absent"
+                                        >
+                                            X
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+
+                            <!-- =================================
+                                 ABSENT
+                            ================================== -->
+
+                            {% elif cell.status == "absent" %}
+
+                                <div class="absent-mark">
+                                    X
+                                </div>
+
+                                <div class="attendance-actions mt-1">
+
+                                    <form method="post">
+
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="attendance_id"
+                                            value="{{ cell.attendance.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="student_id"
+                                            value="{{ row.student.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="present"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-success"
+                                            title="Mark Present"
+                                        >
+                                            ✓
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+
+                            <!-- =================================
+                                 NOT MARKED
+                            ================================== -->
+
+                            {% else %}
+
+                                <div class="attendance-actions">
+
+                                    <!-- Present -->
+
+                                    <form method="post">
+
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="attendance_id"
+                                            value="{{ cell.attendance.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="student_id"
+                                            value="{{ row.student.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="present"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-success present-btn"
+                                        >
+                                            ✓
+                                        </button>
+
+                                    </form>
+
+
+                                    <!-- Absent -->
+
+                                    <form method="post">
+
+                                        {% csrf_token %}
+
+                                        <input
+                                            type="hidden"
+                                            name="attendance_id"
+                                            value="{{ cell.attendance.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="student_id"
+                                            value="{{ row.student.id }}"
+                                        >
+
+                                        <input
+                                            type="hidden"
+                                            name="status"
+                                            value="absent"
+                                        >
+
+                                        <button
+                                            type="submit"
+                                            class="btn btn-sm btn-outline-danger absent-btn"
+                                        >
+                                            X
+                                        </button>
+
+                                    </form>
+
+                                </div>
+
+                            {% endif %}
+
+
+                        <!-- =====================================
+                             CLASS NOT HELD
+                        ====================================== -->
+
+                        {% else %}
+
+                            <span class="text-muted">
+                                —
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                    {% endfor %}
+
+
+                    <!-- ==============================
+                         PRESENT COUNT
+                    =============================== -->
+
+                    <td class="fw-bold text-success">
+
+                        {{ row.present }}
+
+                    </td>
+
+
+                    <!-- ==============================
+                         ABSENT COUNT
+                    =============================== -->
+
+                    <td class="fw-bold text-danger">
+
+                        {{ row.absent }}
+
+                    </td>
+
+
+                    <!-- ==============================
+                         ATTENDANCE PERCENTAGE
+                    =============================== -->
+
+                    <td>
+
+                        {% if row.percentage >= 75 %}
+
+                            <span class="badge bg-success percentage-badge">
+                                {{ row.percentage }}%
+                            </span>
+
+                        {% elif row.percentage >= 50 %}
+
+                            <span class="badge bg-warning text-dark percentage-badge">
+                                {{ row.percentage }}%
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-danger percentage-badge">
+                                {{ row.percentage }}%
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+
+                {% empty %}
+
+                <!-- No Students -->
+
+                <tr>
+
+                    <td
+                        colspan="43"
+                        class="text-center text-muted py-5"
+                    >
+
+                        No students found for this session.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =====================================================
+     SCROLL POSITION PRESERVATION
+====================================================== -->
+
+<script>
+
+document.addEventListener("DOMContentLoaded", function () {
+
+    const container =
+        document.getElementById("registerContainer");
+
+    if (!container) {
+        return;
+    }
+
+
+    /*
+     * Restore scroll position
+     */
+
+    const savedTop =
+        sessionStorage.getItem("attendanceScrollTop");
+
+    const savedLeft =
+        sessionStorage.getItem("attendanceScrollLeft");
+
+
+    if (savedTop !== null) {
+
+        container.scrollTop =
+            parseInt(savedTop);
+
+    }
+
+    if (savedLeft !== null) {
+
+        container.scrollLeft =
+            parseInt(savedLeft);
+
+    }
+
+
+    /*
+     * Save scroll position
+     */
+
+    container.addEventListener("scroll", function () {
+
+        sessionStorage.setItem(
+            "attendanceScrollTop",
+            container.scrollTop
+        );
+
+        sessionStorage.setItem(
+            "attendanceScrollLeft",
+            container.scrollLeft
+        );
+
+    });
+
+
+    /*
+     * Before submitting any form,
+     * save current scroll position.
+     */
+
+    document.querySelectorAll(
+        "#registerContainer form"
+    ).forEach(function (form) {
+
+        form.addEventListener(
+            "submit",
+            function () {
+
+                sessionStorage.setItem(
+                    "attendanceScrollTop",
+                    container.scrollTop
+                );
+
+                sessionStorage.setItem(
+                    "attendanceScrollLeft",
+                    container.scrollLeft
+                );
+
+            }
+        );
+
+    });
+
+});
+
+</script>
+
+<script>
+document.querySelectorAll("[data-network-start]").forEach(function (startButton) {
+    startButton.addEventListener("click", function (event) {
+        event.preventDefault();
+
+        const statusBox = startButton.parentElement.querySelector(".network-status");
+
+        function showStatus(message, type) {
+            statusBox.innerHTML = `<div class="alert alert-${type} py-1 px-2 mb-0">${message}</div>`;
+        }
+
+        startButton.classList.add("disabled");
+        startButton.setAttribute("aria-disabled", "true");
+        showStatus("Checking network...", "info");
+
+        const csrfToken = startButton.dataset.csrfToken ||
+            document.querySelector("[name=csrfmiddlewaretoken]")?.value ||
+            "";
+        const formData = new FormData();
+        formData.append("csrfmiddlewaretoken", csrfToken);
+
+        fetch(startButton.href, {
+            method: "POST",
+            body: formData
+        })
+            .then(function (response) {
+                return response.json().then(function (data) {
+                    return { ok: response.ok, data: data };
+                });
+            })
+            .then(function (result) {
+                if (!result.ok || !result.data.success) {
+                    throw new Error(
+                        result.data.message || "Unable to determine the network."
+                    );
+                }
+
+                showStatus("✓ Network detected. Starting attendance...", "success");
+                window.location.href = startButton.href;
+            })
+            .catch(function (error) {
+                showStatus(error.message, "danger");
+                startButton.classList.remove("disabled");
+                startButton.removeAttribute("aria-disabled");
+            });
+    });
+});
+</script>
+
+{% endblock %}

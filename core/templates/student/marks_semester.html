@@ -1,0 +1,516 @@
+{% extends "index.html" %}
+
+{% block title %}
+Semester Result
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+    <div class="mb-4">
+
+        <a href="{% url 'student_marks_year' session.id year %}"
+           class="btn btn-sm btn-outline-secondary mb-3">
+            ← Back to Semesters
+        </a>
+
+        <h2 class="fw-bold mb-1">
+            Semester Result
+        </h2>
+
+        <p class="text-muted mb-0">
+            {{ student.first_name }}
+            {{ student.last_name }}
+            • Session {{ session.year }}
+            • Year {{ year }}
+            • Semester {{ semester }}
+        </p>
+
+    </div>
+
+
+    <!-- Result Summary -->
+    <div class="row g-3 mb-4">
+
+        <!-- Total Credit -->
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Credit
+                    </small>
+
+                    <h3 class="fw-bold text-primary mb-0">
+                        {{ total_credit|floatformat:2 }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Total Credit × Grade Point -->
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        Total Credit × Grade Point
+                    </small>
+
+                    <h3 class="fw-bold text-success mb-0">
+                        {{ total_credit_grade_point|floatformat:2 }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- TGPA -->
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <small class="text-muted">
+                        TGPA
+                    </small>
+
+                    <h3 class="fw-bold text-dark mb-0">
+                        {{ tgpa|floatformat:2 }}
+                    </h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Course-wise Result -->
+    <div class="card border-0 shadow-sm">
+
+        <!-- Card Header -->
+        <div class="card-header bg-white py-3">
+
+            <div class="d-flex justify-content-between align-items-center">
+
+                <div>
+
+                    <h5 class="fw-bold mb-1">
+                        Course-wise Result
+                    </h5>
+
+                    <small class="text-muted">
+                        CT Marks + Attendance Marks
+                    </small>
+
+                </div>
+
+                <span class="badge bg-primary px-3 py-2">
+                    {{ courses|length }} Courses
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- Card Body -->
+        <div class="card-body p-0">
+
+            {% if courses %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover align-middle mb-0">
+
+                    <!-- Table Header -->
+                    <thead class="table-light text-center">
+
+                        <tr>
+
+                            <th class="ps-3">
+                                SL
+                            </th>
+
+                            <th>
+                                Course Code
+                            </th>
+
+                            <th>
+                                Course Name
+                            </th>
+
+                            <th>
+                                Teacher
+                            </th>
+
+                            <th>
+                                CT-1
+                            </th>
+
+                            <th>
+                                CT-2
+                            </th>
+
+                            <th>
+                                CT-3
+                            </th>
+
+                            <th>
+                                CT Average
+                            </th>
+
+                            <th>
+                                Attendance<br>
+                                <small>Marks</small>
+                            </th>
+
+                            <th>
+                                Credit
+                            </th>
+
+                            <th>
+                                Grade Point
+                            </th>
+
+                            <th>
+                                Letter Grade
+                            </th>
+
+                            <th>
+                                Credit × GP
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <!-- Table Body -->
+                    <tbody>
+
+                        {% for course in courses %}
+
+                        <tr class="text-center">
+
+                            <!-- SL -->
+                            <td class="ps-3">
+                                {{ forloop.counter }}
+                            </td>
+
+
+                            <!-- Course Code -->
+                            <td>
+
+                                <strong>
+                                    {{ course.course_code }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- Course Name -->
+                            <td class="text-start">
+                                {{ course.course_name }}
+                            </td>
+
+
+                            <!-- Teacher -->
+                            <td>
+
+                                {% if course.teacher %}
+
+                                    {{ course.teacher.get_full_name|default:course.teacher.username }}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- CT-1 -->
+                            <td>
+
+                                {% if course.student_mark %}
+
+                                    {% if course.student_mark.ct1 is not None %}
+
+                                        {{ course.student_mark.ct1|floatformat:2 }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- CT-2 -->
+                            <td>
+
+                                {% if course.student_mark %}
+
+                                    {% if course.student_mark.ct2 is not None %}
+
+                                        {{ course.student_mark.ct2|floatformat:2 }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- CT-3 -->
+                            <td>
+
+                                {% if course.student_mark %}
+
+                                    {% if course.student_mark.ct3 is not None %}
+
+                                        {{ course.student_mark.ct3|floatformat:2 }}
+
+                                    {% else %}
+
+                                        —
+
+                                    {% endif %}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- CT Average -->
+                            <td>
+                                {{ course.ct_average|floatformat:2 }}
+                            </td>
+
+
+                            <!-- Attendance Marks -->
+                            <td>
+
+                                {% if course.attendance_marks is not None %}
+
+                                    {{ course.attendance_marks|floatformat:2 }}
+
+                                {% else %}
+
+                                    —
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Credit -->
+                            <td>
+                                {{ course.credit|floatformat:2 }}
+                            </td>
+
+
+                            <!-- Grade Point -->
+                            <td>
+
+                                <strong>
+                                    {{ course.grade_point|floatformat:2 }}
+                                </strong>
+
+                            </td>
+
+
+                            <!-- Letter Grade -->
+                            <td>
+
+                                {% if course.letter_grade == "A+" %}
+
+                                    <span class="badge bg-success px-3 py-2">
+                                        A+
+                                    </span>
+
+                                {% elif course.letter_grade == "A" %}
+
+                                    <span class="badge bg-success px-3 py-2">
+                                        A
+                                    </span>
+
+                                {% elif course.letter_grade == "A-" %}
+
+                                    <span class="badge bg-info px-3 py-2">
+                                        A-
+                                    </span>
+
+                                {% elif course.letter_grade == "B+" %}
+
+                                    <span class="badge bg-primary px-3 py-2">
+                                        B+
+                                    </span>
+
+                                {% elif course.letter_grade == "B" %}
+
+                                    <span class="badge bg-primary px-3 py-2">
+                                        B
+                                    </span>
+
+                                {% elif course.letter_grade == "B-" %}
+
+                                    <span class="badge bg-secondary px-3 py-2">
+                                        B-
+                                    </span>
+
+                                {% elif course.letter_grade == "C+" %}
+
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        C+
+                                    </span>
+
+                                {% elif course.letter_grade == "C" %}
+
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        C
+                                    </span>
+
+                                {% elif course.letter_grade == "D" %}
+
+                                    <span class="badge bg-warning text-dark px-3 py-2">
+                                        D
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-danger px-3 py-2">
+                                        F
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <!-- Credit × Grade Point -->
+                            <td>
+                                {{ course.credit_grade_point|floatformat:2 }}
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+
+                    <!-- Footer Summary -->
+                    <tfoot>
+
+                        <!-- Total Credit + Credit × GP -->
+                        <tr class="table-primary fw-bold text-center">
+
+                            <td colspan="9" class="text-end">
+                                Total Credit:
+                            </td>
+
+                            <td>
+                                {{ total_credit|floatformat:2 }}
+                            </td>
+
+                            <td colspan="2" class="text-end">
+                                Total Credit × GP:
+                            </td>
+
+                            <td>
+                                {{ total_credit_grade_point|floatformat:2 }}
+                            </td>
+
+                        </tr>
+
+
+                        <!-- TGPA -->
+                        <tr class="table-success fw-bold text-center">
+
+                            <td colspan="12" class="text-end">
+                                TGPA:
+                            </td>
+
+                            <td>
+
+                                <span class="fs-5">
+                                    {{ tgpa|floatformat:2 }}
+                                </span>
+
+                            </td>
+
+                        </tr>
+
+                    </tfoot>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <!-- No Result -->
+            <div class="text-center py-5">
+
+                <div class="fs-1 mb-3">
+                    📝
+                </div>
+
+                <h5 class="fw-bold">
+                    No Result Available
+                </h5>
+
+                <p class="text-muted mb-0">
+                    No marks are available for this semester.
+                </p>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

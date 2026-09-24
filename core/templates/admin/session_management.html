@@ -1,0 +1,197 @@
+{% extends "index.html" %}
+
+
+{% block title %}
+Session Management | Attendance Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h2 class="fw-bold mb-1">
+                Session Management
+            </h2>
+
+            <p class="text-muted mb-0">
+                Manage academic sessions and student batches.
+            </p>
+
+        </div>
+
+
+        <a
+            href="{% url 'admin_dashboard' %}"
+            class="btn btn-outline-secondary"
+        >
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    <!-- Session List -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-body">
+
+            <div class="d-flex justify-content-between align-items-center mb-3">
+
+                <h5 class="fw-bold mb-0">
+                    Academic Sessions
+                </h5>
+
+                <span class="badge bg-primary">
+                    {{ sessions|length }} Sessions
+                </span>
+
+            </div>
+
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle">
+
+                    <thead class="table-dark">
+
+                        <tr>
+
+                            <th>#</th>
+
+                            <th>Session</th>
+
+                            <th>Students</th>
+
+                            <th>Status</th>
+
+                            <th>Created</th>
+
+                            <th>Action</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <dev class="d-flex justify-content-end mb-3">
+                    <a href="{% url 'create_session' %}"class="btn btn-success">+ Create Session</a>
+                    </dev>
+
+
+
+
+
+                    <tbody>
+
+                        {% for session in sessions %}
+
+                        <tr>
+
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+
+                            <td>
+
+                                <strong>
+                                    {{ session.year }}
+                                </strong>
+
+                            </td>
+
+
+                            <td>
+
+                                <span class="badge bg-info text-dark">
+
+                                    {{ session.students.count }}
+
+                                    Students
+
+                                </span>
+
+                            </td>
+
+
+                            <td>
+
+                                {% if session.is_graduated %}
+
+                                    <span class="badge bg-success">
+                                        Graduated
+                                    </span>
+
+                                {% else %}
+
+                                    <span class="badge bg-primary">
+                                        Active
+                                    </span>
+
+                                {% endif %}
+
+                            </td>
+
+
+                            <td>
+                                {{ session.created_at|date:"d M Y" }}
+                            </td>
+
+
+                            <td>
+
+                                <a
+                                    href="{% url 'session_students' session.id %}"
+                                    class="btn btn-sm btn-outline-primary"
+                                >
+                                    View Students
+                                </a>
+                                <a
+                            href="{% url 'edit_session' session.id %}"
+                            class="btn btn-sm btn-outline-warning"
+                        >
+                            Edit
+                        </a>
+
+                        <a href="{% url 'delete_session' session.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+
+                            </td>
+
+                        </tr>
+
+
+                        {% empty %}
+
+                        <tr>
+
+                            <td
+                                colspan="6"
+                                class="text-center py-4 text-muted"
+                            >
+                                No sessions found.
+                            </td>
+
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

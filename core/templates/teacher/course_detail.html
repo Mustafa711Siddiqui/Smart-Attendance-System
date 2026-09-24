@@ -1,0 +1,141 @@
+{% extends "index.html" %}
+
+{% block title %}
+{{ course.course_code }} | Teacher Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+
+        <a href="{% url 'teacher_semester_courses' course.session.id course.year course.semester %}"
+           class="btn btn-sm btn-outline-secondary mb-3">
+            ← Back to Courses
+        </a>
+
+        <h2 class="fw-bold mb-1">
+            {{ course.course_code }} - {{ course.course_name }}
+        </h2>
+
+        <p class="text-muted mb-0">
+            Session {{ course.session.year }}
+            • {{ course.year }} Year
+            • {{ course.semester }} Semester
+        </p>
+
+    </div>
+
+
+    <!-- Course Information -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <div class="row">
+
+                <div class="col-md-3">
+                    <small class="text-muted">Course Code</small>
+                    <h5 class="fw-bold">
+                        {{ course.course_code }}
+                    </h5>
+                </div>
+
+                <div class="col-md-4">
+                    <small class="text-muted">Course Name</small>
+                    <h5 class="fw-bold">
+                        {{ course.course_name }}
+                    </h5>
+                </div>
+
+                <div class="col-md-2">
+                    <small class="text-muted">Credit</small>
+                    <h5 class="fw-bold">
+                        {{ course.credit }}
+                    </h5>
+                </div>
+
+                <div class="col-md-3">
+                    <small class="text-muted">Semester</small>
+                    <h5 class="fw-bold">
+                        {{ course.semester }}
+                    </h5>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Course Options -->
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center py-5">
+
+                    <div class="fs-1 mb-3">
+                        📋
+                    </div>
+
+                    <h4 class="fw-bold">
+                        Take Attendance
+                    </h4>
+
+                    <p class="text-muted">
+                        Take attendance for students of this course.
+                    </p>
+
+
+<a href="{% url 'teacher_create_attendance_classes' course.id %}"
+   class="btn btn-warning px-4">
+    📊 Attendance Register
+</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <div class="col-md-6">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body text-center py-5">
+
+                    <div class="fs-1 mb-3">
+                        📝
+                    </div>
+
+                    <h4 class="fw-bold">
+                        Marks Ebulation
+                    </h4>
+
+                   
+
+                    <a href="{% url 'teacher_class_test_marks' course.id %}"
+   class="btn btn-success px-4">
+    Class Test Marks
+</a>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

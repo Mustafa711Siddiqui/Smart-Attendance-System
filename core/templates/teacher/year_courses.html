@@ -1,0 +1,117 @@
+{% extends "index.html" %}
+
+{% block title %}
+{{ year }} Year | Session {{ session.year }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- Header -->
+
+    <div class="mb-4">
+
+        
+
+        <a
+            href="{% url 'teacher_session_courses' session.id %}"
+            class="btn btn-sm btn-outline-secondary mb-3"
+        >
+            ← Back to Years
+        </a>
+
+        <h2 class="fw-bold mb-1">
+            {{ year }} Year
+        </h2>
+
+        <p class="text-muted mb-0">
+            Session {{ session.year }} — Select a semester
+        </p>
+
+    </div>
+
+
+    <!-- Semesters -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+                Semesters
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% if semesters %}
+
+                <div class="row g-4">
+
+                    {% for semester in semesters %}
+
+                        <div class="col-md-6 col-lg-4">
+
+                            <div class="card border shadow-sm h-100">
+
+                                <div class="card-body text-center">
+
+                                    <div class="fs-1 mb-3">
+                                        📖
+                                    </div>
+
+                                    <h5 class="fw-bold">
+                                        {{ semester }} Semester
+                                    </h5>
+
+                                    <p class="text-muted small">
+                                        View courses
+                                    </p>
+
+                            <a
+                                href="{% url 'teacher_semester_courses' session.id year semester %}"
+                                class="btn btn-primary w-100"
+                            >
+                                Open Semester
+                            </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <div class="fs-1 mb-2">
+                        📖
+                    </div>
+
+                    <h6 class="fw-bold">
+                        No Semesters Found
+                    </h6>
+
+                    <p class="text-muted mb-0">
+                        No courses are available for this year.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

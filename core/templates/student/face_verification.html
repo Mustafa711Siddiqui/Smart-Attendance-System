@@ -1,0 +1,568 @@
+{% extends "index.html" %}
+
+{% block title %}
+Face Verification - {{ course.course_code }}
+{% endblock %}
+
+{% block content %}
+
+<style>
+
+    .face-card {
+        max-width: 700px;
+        margin: 40px auto;
+        border-radius: 16px;
+    }
+
+    .camera-container {
+        position: relative;
+        width: 100%;
+        max-width: 500px;
+        margin: 0 auto;
+        background: #111;
+        border-radius: 14px;
+        overflow: hidden;
+    }
+
+    #video {
+        width: 100%;
+        display: block;
+        transform: scaleX(-1);
+    }
+
+    #canvas {
+        display: none;
+    }
+
+    .camera-placeholder {
+        height: 350px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        text-align: center;
+    }
+
+    .face-guide {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 220px;
+        height: 280px;
+        transform: translate(-50%, -50%);
+        border: 3px solid #00ff88;
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+</style>
+
+
+<div class="container py-4">
+
+    <div class="card shadow-sm face-card">
+
+        <div class="card-body p-4 text-center">
+
+            <div class="mb-3" style="font-size: 45px;">
+                🔐
+            </div>
+
+            <h3 class="fw-bold">
+                Face Verification
+            </h3>
+
+            <p class="text-muted mb-1">
+                {{ course.course_code }}
+            </p>
+
+            <p class="text-muted">
+                Class {{ attendance.class_number }}
+                |
+                {{ attendance.date }}
+            </p>
+
+            <hr>
+
+
+            {% if error %}
+
+                <div class="alert alert-danger">
+                    {{ error }}
+                </div>
+
+            {% endif %}
+
+
+            <div class="alert alert-info">
+
+                <strong>
+                    Position your face inside the frame.
+                </strong>
+
+                <br>
+
+                <small>
+                    Make sure only your face is visible
+                    and there is enough light.
+                </small>
+
+            </div>
+
+
+            <!-- CAMERA -->
+
+            <div class="camera-container">
+
+                <video
+                    id="video"
+                    autoplay
+                    playsinline
+                ></video>
+
+                <div
+                    id="cameraPlaceholder"
+                    class="camera-placeholder"
+                >
+
+                    <div>
+
+                        <div style="font-size: 50px;">
+                            📷
+                        </div>
+
+                        Camera is not started
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="faceGuide"
+                    class="face-guide"
+                    style="display:none;"
+                ></div>
+
+            </div>
+
+
+            <canvas id="canvas"></canvas>
+
+
+            <!-- STATUS -->
+
+            <div
+                id="statusBox"
+                class="mt-3"
+            ></div>
+
+
+            <!-- BUTTONS -->
+
+            <div class="mt-4">
+
+                <button
+                    type="button"
+                    id="startCameraBtn"
+                    class="btn btn-primary btn-lg px-4"
+                >
+                    📷 Start Camera
+                </button>
+
+
+                <button
+                    type="button"
+                    id="verifyBtn"
+                    class="btn btn-success btn-lg px-4"
+                    style="display:none;"
+                >
+                    ✓ Verify Face
+                </button>
+
+            </div>
+
+
+            <a
+                href="{% url 'student_course_attendance' course.id %}"
+                class="btn btn-outline-secondary mt-3"
+            >
+                ← Back
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const video =
+    document.getElementById("video");
+
+const canvas =
+    document.getElementById("canvas");
+
+const startCameraBtn =
+    document.getElementById("startCameraBtn");
+
+const verifyBtn =
+    document.getElementById("verifyBtn");
+
+const statusBox =
+    document.getElementById("statusBox");
+
+const cameraPlaceholder =
+    document.getElementById("cameraPlaceholder");
+
+const faceGuide =
+    document.getElementById("faceGuide");
+
+
+let cameraStream = null;
+
+
+/* =====================================
+   STATUS
+===================================== */
+
+function showStatus(message, type) {
+
+    statusBox.innerHTML = `
+        <div class="alert alert-${type}">
+            ${message}
+        </div>
+    `;
+
+}
+
+
+/* =====================================
+   START CAMERA
+===================================== */
+
+startCameraBtn.addEventListener(
+    "click",
+    async function () {
+
+        try {
+
+            cameraStream =
+                await navigator.mediaDevices.getUserMedia({
+
+                    video: {
+                        facingMode: "user"
+                    },
+
+                    audio: false
+
+                });
+
+
+            video.srcObject =
+                cameraStream;
+
+
+            video.style.display =
+                "block";
+
+
+            cameraPlaceholder.style.display =
+                "none";
+
+
+            faceGuide.style.display =
+                "block";
+
+
+            startCameraBtn.style.display =
+                "none";
+
+
+            verifyBtn.style.display =
+                "inline-block";
+
+
+            showStatus(
+                "Camera started. Position your face inside the frame.",
+                "success"
+            );
+
+
+        } catch (error) {
+
+            console.error(error);
+
+
+            showStatus(
+                "Camera access denied. Please allow camera permission.",
+                "danger"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   VERIFY FACE
+===================================== */
+
+verifyBtn.addEventListener(
+    "click",
+    function () {
+
+        if (!cameraStream) {
+
+            showStatus(
+                "Please start the camera first.",
+                "warning"
+            );
+
+            return;
+
+        }
+
+
+        /*
+         * Capture current video frame
+         */
+
+        const width =
+            video.videoWidth;
+
+        const height =
+            video.videoHeight;
+
+
+        if (!width || !height) {
+
+            showStatus(
+                "Camera is not ready yet.",
+                "warning"
+            );
+
+            return;
+
+        }
+
+
+        canvas.width =
+            width;
+
+        canvas.height =
+            height;
+
+
+        const context =
+            canvas.getContext("2d");
+
+
+        /*
+         * Remove mirror effect
+         */
+
+        context.translate(width, 0);
+
+        context.scale(-1, 1);
+
+
+        context.drawImage(
+            video,
+            0,
+            0,
+            width,
+            height
+        );
+
+
+        /*
+         * Convert image to base64
+         */
+
+        const image =
+            canvas.toDataURL(
+                "image/jpeg",
+                0.9
+            );
+
+
+        verifyBtn.disabled =
+            true;
+
+
+        verifyBtn.innerHTML =
+            "⏳ Verifying...";
+
+
+        showStatus(
+            "Checking your face. Please wait...",
+            "info"
+        );
+
+
+        /*
+         * Send image to Django
+         */
+
+        fetch(
+            "{% url 'student_face_verification' attendance.id %}",
+            {
+
+                method: "POST",
+
+                headers: {
+
+                    "Content-Type":
+                        "application/x-www-form-urlencoded",
+
+                    "X-CSRFToken":
+                        "{{ csrf_token }}"
+
+                },
+
+                body:
+                    "image=" +
+                    encodeURIComponent(image)
+
+            }
+        )
+
+        .then(async response => {
+
+            const responseText = await response.text();
+            let data;
+
+            try {
+                data = JSON.parse(responseText);
+            } catch (error) {
+                data = {
+                    success: false,
+                    message: responseText || "The server returned an empty response."
+                };
+            }
+
+            if (!response.ok) {
+                throw new Error(
+                    "Server returned HTTP " + response.status + ": "
+                    + (data.message || "The verification request was rejected.")
+                );
+            }
+
+            return data;
+        })
+
+        .then(data => {
+
+            if (data.success) {
+
+                showStatus(
+                    "✅ " + data.message,
+                    "success"
+                );
+
+
+                /*
+                 * Stop camera
+                 */
+
+                if (cameraStream) {
+
+                    cameraStream
+                        .getTracks()
+                        .forEach(
+                            track => track.stop()
+                        );
+
+                }
+
+
+                verifyBtn.innerHTML =
+                    "✅ Attendance Marked";
+
+
+                /*
+                 * Go back after 2 seconds
+                 */
+
+                setTimeout(
+                    function () {
+
+                        window.location.href =
+                            "{% url 'student_course_attendance' course.id %}";
+
+                    },
+                    2000
+                );
+
+
+            } else {
+
+                showStatus(
+                    "❌ " + data.message,
+                    "danger"
+                );
+
+
+                verifyBtn.disabled =
+                    false;
+
+
+                verifyBtn.innerHTML =
+                    "✓ Verify Face";
+
+            }
+
+        })
+
+        .catch(error => {
+
+            console.error(error);
+
+
+            showStatus(
+                "❌ " + (error.message || "Verification request failed."),
+                "danger"
+            );
+
+
+            verifyBtn.disabled =
+                false;
+
+
+            verifyBtn.innerHTML =
+                "✓ Verify Face";
+
+        });
+
+    }
+);
+
+
+/* =====================================
+   STOP CAMERA
+===================================== */
+
+window.addEventListener(
+    "beforeunload",
+    function () {
+
+        if (cameraStream) {
+
+            cameraStream
+                .getTracks()
+                .forEach(
+                    track => track.stop()
+                );
+
+        }
+
+    }
+);
+
+</script>
+
+{% endblock %}

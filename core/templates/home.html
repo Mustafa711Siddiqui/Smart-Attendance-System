@@ -1,0 +1,690 @@
+{% extends "index.html" %}
+
+{% block title %}
+Home | Attendance Management System
+{% endblock %}
+
+{% block global_back_button %}{% endblock %}
+
+{% block content %}
+
+<style>
+
+/* =========================================================
+   HOME PAGE
+   ========================================================= */
+
+.home-page {
+    background: #f8fafc;
+    color: #1e293b;
+}
+
+
+/* =========================================================
+   HERO SECTION
+   ========================================================= */
+
+.hero-section {
+    min-height: 78vh;
+    display: flex;
+    align-items: center;
+
+    background:
+        radial-gradient(
+            circle at 85% 20%,
+            rgba(13, 110, 253, 0.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            135deg,
+            #f8fbff 0%,
+            #ffffff 100%
+        );
+}
+
+.hero-section .card {
+    border-radius: 18px;
+}
+
+.hero-section .card-body {
+    border-radius: 18px;
+}
+
+
+/* =========================================================
+   ABOUT US
+   ========================================================= */
+
+.about-section {
+    padding: 75px 0;
+    background: #ffffff;
+}
+
+.section-label {
+    color: #0d6efd;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+}
+
+.section-title {
+    color: #172033;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.about-text {
+    color: #64748b;
+    font-size: 16px;
+    line-height: 1.8;
+}
+
+.about-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 30px;
+}
+
+.about-card-icon {
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e8f1ff;
+    color: #0d6efd;
+
+    border-radius: 14px;
+
+    font-size: 25px;
+    margin-bottom: 18px;
+}
+
+.about-card h5 {
+    color: #172033;
+    font-weight: 700;
+}
+
+.about-card p {
+    color: #64748b;
+    line-height: 1.7;
+    margin-bottom: 0;
+}
+
+
+/* =========================================================
+   SIMPLE CONTACT US
+   ========================================================= */
+
+.contact-section {
+    padding: 70px 0;
+    background: #f8fafc;
+}
+
+.contact-section .section-title {
+    color: #172033;
+    font-weight: 800;
+}
+
+.contact-description {
+    max-width: 600px;
+    margin: 0 auto;
+    color: #64748b;
+    line-height: 1.7;
+}
+
+.contact-btn {
+    border-radius: 9px;
+    font-weight: 600;
+    padding: 11px 25px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.main-footer {
+    background: #111827;
+    color: #ffffff;
+    padding-top: 45px;
+}
+
+.footer-brand {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.footer-description {
+    color: #9ca3af;
+    line-height: 1.7;
+    max-width: 500px;
+    margin-bottom: 0;
+}
+
+.footer-links-title {
+    font-size: 15px;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 8px;
+}
+
+.footer-links a {
+    color: #9ca3af;
+    text-decoration: none;
+    transition: 0.2s;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+.footer-bottom {
+    margin-top: 35px;
+    padding: 18px 0;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-bottom p {
+    color: #6b7280;
+    font-size: 13px;
+    margin: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 991px) {
+
+    .hero-section {
+        padding: 50px 0;
+    }
+
+    .about-section,
+    .contact-section {
+        padding: 60px 0;
+    }
+
+}
+
+@media (max-width: 576px) {
+
+    .hero-section {
+        min-height: auto;
+    }
+
+    .footer-bottom {
+        text-align: center;
+    }
+
+}
+
+</style>
+
+<div class="home-page">
+
+<!-- =====================================================
+     HERO SECTION
+===================================================== -->
+
+<section class="hero-section py-5">
+
+```
+<div class="container">
+
+    <div class="row align-items-center min-vh-75">
+
+
+        <!-- HERO CONTENT -->
+
+        <div class="col-lg-7">
+
+            <div class="mb-3">
+
+                <span class="badge bg-primary px-3 py-2">
+
+                    Smart Attendance Management System
+
+                </span>
+
+            </div>
+
+
+            <h1 class="display-4 fw-bold mb-4">
+
+                Manage Attendance
+
+                <span class="text-primary">
+                    Smarter & Easier
+                </span>
+
+            </h1>
+
+
+            <p class="lead text-muted mb-4">
+
+                A simple and efficient platform to manage
+                students, teachers, courses, sessions and
+                attendance in one place.
+
+            </p>
+
+
+            <!-- HERO BUTTONS -->
+
+            <div class="d-flex flex-wrap gap-3">
+
+                <a
+                    href="{% url 'login' %}"
+                    class="btn btn-primary btn-lg px-4"
+                >
+                    Login
+                </a>
+
+
+                <a
+                    href="{% url 'register' %}"
+                    class="btn btn-outline-dark btn-lg px-4"
+                >
+                    Register
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <!-- HERO CARD -->
+
+        <div class="col-lg-5 mt-5 mt-lg-0">
+
+            <div class="card border-0 shadow-lg">
+
+                <div class="card-body p-4">
+
+
+                    <!-- ICON -->
+
+                    <div class="text-center mb-4">
+
+                        <div
+                            class="bg-primary text-white rounded-circle
+                            d-inline-flex align-items-center
+                            justify-content-center"
+                            style="
+                                width: 80px;
+                                height: 80px;
+                                font-size: 35px;
+                            "
+                        >
+                            📊
+                        </div>
+
+                    </div>
+
+
+                    <h4 class="text-center fw-bold mb-4">
+                        System Overview
+                    </h4>
+
+
+                    <!-- STUDENT -->
+
+                    <div class="d-flex align-items-start mb-4">
+
+                        <div class="fs-3 me-3">
+                            👨‍🎓
+                        </div>
+
+                        <div>
+
+                            <h6 class="fw-bold mb-1">
+                                Student Management
+                            </h6>
+
+                            <p class="text-muted small mb-0">
+
+                                Manage student profiles,
+                                sessions and academic information.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- TEACHER -->
+
+                    <div class="d-flex align-items-start mb-4">
+
+                        <div class="fs-3 me-3">
+                            👨‍🏫
+                        </div>
+
+                        <div>
+
+                            <h6 class="fw-bold mb-1">
+                                Teacher Management
+                            </h6>
+
+                            <p class="text-muted small mb-0">
+
+                                Manage teachers, positions
+                                and assigned courses.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- COURSE -->
+
+                    <div class="d-flex align-items-start mb-4">
+
+                        <div class="fs-3 me-3">
+                            📚
+                        </div>
+
+                        <div>
+
+                            <h6 class="fw-bold mb-1">
+                                Course Management
+                            </h6>
+
+                            <p class="text-muted small mb-0">
+
+                                Organize courses according
+                                to session, year and semester.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ATTENDANCE -->
+
+                    <div class="d-flex align-items-start">
+
+                        <div class="fs-3 me-3">
+                            📋
+                        </div>
+
+                        <div>
+
+                            <h6 class="fw-bold mb-1">
+                                Attendance Tracking
+                            </h6>
+
+                            <p class="text-muted small mb-0">
+
+                                Record and monitor student
+                                attendance efficiently.
+
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     ABOUT US
+===================================================== -->
+
+<section class="about-section" id="about">
+
+```
+<div class="container">
+
+    <div class="row align-items-center g-5">
+
+
+        <!-- ABOUT CONTENT -->
+
+        <div class="col-lg-7">
+
+            <div class="section-label">
+                About Us
+            </div>
+
+            <h2 class="section-title">
+                Attendance Management
+                Made Simple
+            </h2>
+
+            <p class="about-text">
+
+                The Attendance Management System is designed
+                to make academic attendance management simple,
+                organized and efficient.
+
+            </p>
+
+            <p class="about-text">
+
+                It provides a centralized platform for managing
+                students, teachers, courses, academic sessions
+                and attendance records in one place.
+
+            </p>
+
+        </div>
+
+
+        <!-- ABOUT CARD -->
+
+        <div class="col-lg-5">
+
+            <div class="about-card">
+
+                <div class="about-card-icon">
+                    🎓
+                </div>
+
+                <h5>
+                    Our Purpose
+                </h5>
+
+                <p>
+
+                    To reduce manual work and provide a
+                    simple and organized way to manage
+                    academic attendance and student
+                    information.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     SIMPLE CONTACT US
+===================================================== -->
+
+<section class="contact-section" id="contact">
+
+```
+<div class="container">
+
+    <div class="text-center">
+
+        <div class="section-label">
+            Contact Us
+        </div>
+
+        <h2 class="section-title">
+            Get in Touch
+        </h2>
+
+        <p class="contact-description mb-4">
+
+            If you have any questions or need assistance
+            with the Attendance Management System,
+            feel free to get in touch with us.
+
+        </p>
+
+        <a
+            href="{% url 'login' %}"
+            class="btn btn-primary contact-btn"
+        >
+            Get Started
+        </a>
+
+    </div>
+
+</div>
+```
+
+</section>
+
+<!-- =====================================================
+     FOOTER
+===================================================== -->
+
+<footer class="main-footer">
+
+```
+<div class="container">
+
+    <div class="row align-items-start g-4">
+
+
+        <!-- BRAND -->
+
+        <div class="col-lg-8">
+
+            <div class="footer-brand">
+                📊 Attendance Management System
+            </div>
+
+            <p class="footer-description">
+
+                A simple and efficient platform for managing
+                students, teachers, courses, sessions and
+                attendance in one place.
+
+            </p>
+
+        </div>
+
+
+        <!-- QUICK LINKS -->
+
+        <div class="col-lg-4">
+
+            <div class="footer-links-title">
+                Quick Links
+            </div>
+
+            <ul class="footer-links">
+
+                <li>
+                    <a href="#">
+                        Home
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#about">
+                        About Us
+                    </a>
+                </li>
+
+                <li>
+                    <a href="#contact">
+                        Contact Us
+                    </a>
+                </li>
+
+                <li>
+                    <a href="{% url 'login' %}">
+                        Login
+                    </a>
+                </li>
+
+            </ul>
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER BOTTOM -->
+
+    <div class="footer-bottom">
+
+        <div class="row">
+
+            <div class="col-md-6">
+
+                <p>
+                    © 2026 Attendance Management System.
+                    All rights reserved.
+                </p>
+
+            </div>
+
+            <div class="col-md-6 text-md-end">
+
+                <p>
+                    Academic Attendance Management System
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+```
+
+</footer>
+
+</div>
+
+{% endblock %}

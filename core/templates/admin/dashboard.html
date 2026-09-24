@@ -1,0 +1,468 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Admin Dashboard | Attendance Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="container">
+
+        <!-- ===================================== -->
+        <!-- DASHBOARD HEADER -->
+        <!-- ===================================== -->
+
+        <div class="mb-4">
+
+            <h2 class="fw-bold mb-1">
+                Admin Dashboard
+            </h2>
+
+            <p class="text-muted mb-0">
+                Welcome,
+                {% if request.user.first_name %}
+                    {{ request.user.first_name }}
+                    {{ request.user.last_name }}
+                {% else %}
+                    {{ request.user.email }}
+                {% endif %}
+            </p>
+
+        </div>
+
+
+        <!-- ===================================== -->
+        <!-- MANAGEMENT SECTION -->
+        <!-- ===================================== -->
+
+        <div class="row g-4">
+
+
+            <!-- ================================= -->
+            <!-- STUDENT MANAGEMENT -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            👨‍🎓
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Student Management
+                        </h5>
+
+                        <p class="text-muted">
+                            View and manage students,
+                            their sessions and academic
+                            information.
+                        </p>
+
+                        <a href="{% url 'student_management' %}"
+                           class="btn btn-outline-primary">
+
+                            Students
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- TEACHER MANAGEMENT -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            👨‍🏫
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Teacher Management
+                        </h5>
+
+                        <p class="text-muted">
+                            Manage teachers, positions
+                            and assigned courses.
+                        </p>
+
+                        <a href="{% url 'teacher_management' %}"
+                           class="btn btn-outline-success">
+
+                            Teachers
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- SESSION MANAGEMENT -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            📅
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Session Management
+                        </h5>
+
+                        <p class="text-muted">
+                            Create and manage academic
+                            sessions and track students
+                            by session.
+                        </p>
+
+                        <a href="{% url 'session_management' %}"
+                           class="btn btn-outline-warning">
+
+                            Sessions
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- COURSE MANAGEMENT -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            📚
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Course Management
+                        </h5>
+
+                        <p class="text-muted">
+                            Manage course code, name,
+                            year, semester, credit,
+                            session and teacher.
+                        </p>
+
+                        <a href="{% url 'course_management' %}"
+                           class="btn btn-outline-info">
+
+                            Courses
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- POSITION MANAGEMENT -->
+            <!-- ================================= -->
+
+<!-- TEACHER POSITIONS -->
+
+<div class="col-md-6 col-lg-4">
+
+    <div class="card border-0 shadow-sm h-100">
+
+        <div class="card-body p-4">
+
+            <div class="fs-1 mb-3">
+                👨‍🏫
+            </div>
+
+            <h5 class="fw-bold">
+                Teacher Positions
+            </h5>
+
+            <p class="text-muted">
+                Add, edit, delete and manage
+                all teacher positions.
+            </p>
+
+            <a
+                href="{% url 'admin_position_list' %}"
+                class="btn btn-outline-primary"
+            >
+                Manage Positions
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+            <!-- ================================= -->
+            <!-- NOTICE MANAGEMENT -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            📢
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Notice Management
+                        </h5>
+
+                        <p class="text-muted">
+                            Create and manage important
+                            notices for teachers and students.
+                        </p>
+
+                        <a href="{% url 'admin_notice_list' %}"
+                           class="btn btn-outline-primary">
+
+                            Notices
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- BUS NOTICE -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            🚌
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Bus Notice
+                        </h5>
+
+                        <p class="text-muted">
+                            Send bus-related announcements,
+                            messages, PDF files and images
+                            to teachers and students.
+                        </p>
+
+                        <a href="{% url 'admin_bus_notice_list' %}"
+                           class="btn btn-outline-primary">
+
+                            Bus Notices
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                
+
+            </div>
+          <div class="col-md-6 col-lg-4">
+
+                <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                            
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Admin Default Dashboard
+                        </h5>
+
+                        <p class="text-muted">
+                            
+                        </p>
+
+                        <a href="{% url 'admin:index' %}"
+                           class="btn btn-outline-primary">
+
+                            Admin Default Dashboard
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+                
+
+            </div>
+
+
+            <!-- ================================= -->
+            <!-- ATTENDANCE -->
+            <!-- ================================= -->
+
+            <div class="col-md-6 col-lg-4">
+
+               
+
+                    <div class="card border-0 shadow-sm h-100">
+
+                    <div class="card-body p-4">
+
+                        <div class="fs-1 mb-3">
+                        
+                        </div>
+
+                        <h5 class="fw-bold">
+                            Question Set
+                        </h5>
+
+                        <p class="text-muted">
+                            Add questions set
+                        </p>
+
+                        <a href="{% url 'semester_question_pattern_list' %}"
+                           class="btn btn-outline-primary">
+
+                            Question Set
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        
+
+
+        <!-- ===================================== -->
+        <!-- ADMIN INFORMATION -->
+        <!-- ===================================== -->
+
+        <div class="card border-0 shadow-sm mt-4">
+
+            <div class="card-body p-4">
+
+                <h5 class="fw-bold mb-4">
+                    Administrator Information
+                </h5>
+
+                <div class="row">
+
+
+                    <!-- NAME -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <small class="text-muted">
+                            Name
+                        </small>
+
+                        <p class="fw-semibold mb-0">
+
+                            {% if request.user.first_name %}
+
+                                {{ request.user.first_name }}
+                                {{ request.user.last_name }}
+
+                            {% else %}
+
+                                {{ request.user.username }}
+
+                            {% endif %}
+
+                        </p>
+
+                    </div>
+
+
+                    <!-- EMAIL -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <small class="text-muted">
+                            Email
+                        </small>
+
+                        <p class="fw-semibold mb-0">
+                            {{ request.user.email }}
+                        </p>
+
+                    </div>
+
+
+                    <!-- ROLE -->
+
+                    <div class="col-md-4 mb-3">
+
+                        <small class="text-muted">
+                            Role
+                        </small>
+
+                        <p class="fw-semibold mb-0">
+                            {{ request.user.get_role_display }}
+                        </p>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+{% endblock %}

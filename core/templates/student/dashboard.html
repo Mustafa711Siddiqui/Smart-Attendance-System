@@ -1,0 +1,298 @@
+{% extends "index.html" %}
+
+{% block title %}
+Student Dashboard | Attendance Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <!-- ===================================================== -->
+    <!-- HEADER -->
+    <!-- ===================================================== -->
+
+    <div class="mb-4">
+
+        <h2 class="fw-bold mb-1">
+            Student Dashboard
+        </h2>
+
+        <p class="text-muted mb-0">
+            Welcome,
+            {{ student.first_name }}
+            {{ student.last_name }}
+        </p>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- PROFILE CARD -->
+    <!-- ===================================================== -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <div class="row align-items-center">
+
+                <!-- Profile Information -->
+
+                <div class="col-md-8">
+
+                    <div class="d-flex align-items-center">
+
+                        {% if student.profile_image %}
+
+                            <img
+                                src="{{ student.profile_image.url }}"
+                                alt="Profile"
+                                class="rounded-circle me-3"
+                                width="80"
+                                height="80"
+                                style="object-fit: cover;"
+                            >
+
+                        {% else %}
+
+                            <div
+                                class="rounded-circle bg-primary text-white
+                                       d-flex align-items-center justify-content-center me-3"
+                                style="width: 80px; height: 80px;"
+                            >
+
+                                <span class="fs-3 fw-bold">
+                                    {{ student.first_name|first|upper }}
+                                </span>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <div>
+
+                            <h5 class="fw-bold mb-1">
+                                {{ student.first_name }}
+                                {{ student.last_name }}
+                            </h5>
+
+                            <p class="text-muted mb-1">
+                                {{ student.email }}
+                            </p>
+
+                            <span class="badge bg-primary">
+                                Student
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Profile Button -->
+
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+
+                    <a
+                        href="{% url 'student_profile' %}"
+                        class="btn btn-outline-primary"
+                    >
+                        👤 View Profile
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- INFORMATION CARDS -->
+    <!-- ===================================================== -->
+
+    <div class="row g-4 mb-4">
+
+
+        <!-- Session -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <p class="text-muted mb-1">
+                        Session
+                    </p>
+
+                    <h4 class="fw-bold mb-0">
+
+                        {% if student.session %}
+                            {{ student.session.year }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Roll -->
+
+        <div class="col-md-4">
+
+            <div class="card border-0 shadow-sm h-100">
+
+                <div class="card-body">
+
+                    <p class="text-muted mb-1">
+                        Roll
+                    </p>
+
+                    <h4 class="fw-bold mb-0">
+
+                        {% if student.roll %}
+                            {{ student.roll }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </h4>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Position -->
+
+       
+
+    </div>
+
+
+    <!-- ===================================================== -->
+    <!-- STUDENT MENU -->
+    <!-- ===================================================== -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+                Student Menu
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <div class="row g-3">
+
+
+                <!-- My Courses -->
+
+                <div class="col-md-6 col-lg-3">
+
+                    <a
+                        href="{% url 'student_courses' %}"
+                        class="btn btn-outline-primary w-100 py-3"
+                    >
+
+                        📚
+
+                        <span class="ms-1">
+                            My Courses
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- Attendance -->
+
+                <div class="col-md-6 col-lg-3">
+
+                    <a
+                        href="{% url 'student_courses' %}"
+                        class="btn btn-outline-warning w-100 py-3"
+                    >
+
+                        📊
+
+                        <span class="ms-1">
+                            My Attendance
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- Class Test Marks -->
+
+                <div class="col-md-6 col-lg-3">
+
+                    <a
+                        href="{% url 'student_class_test_marks' %}"
+                        class="btn btn-outline-success w-100 py-3"
+                    >
+
+                        📝
+
+                        <span class="ms-1">
+                            Class Test Marks
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+                <!-- Bus Notice -->
+
+                <div class="col-md-6 col-lg-3">
+
+                    <a
+                        href="{% url 'student_bus_notices' %}"
+                        class="btn btn-outline-warning w-100 py-3"
+                    >
+
+                        🚌
+
+                        <span class="ms-1">
+                            Bus Notice
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+</div>
+
+{% endblock %}
