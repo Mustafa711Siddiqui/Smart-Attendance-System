@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: attendance-web
+    runtime: python
+    plan: starter
+    rootDir: .
+    buildCommand: bash build.sh
+    startCommand: gunicorn first.wsgi:application --bind 0.0.0.0:$PORT --workers 1 --threads 2 --timeout 120
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.10.14
+      - key: DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
