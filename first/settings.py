@@ -5,6 +5,8 @@ Django settings for first project.
 from pathlib import Path
 import os
 import dj_database_url
+import os
+import dj_database_url
 
 # ---------------------------------------------------------
 # BASE DIRECTORY
