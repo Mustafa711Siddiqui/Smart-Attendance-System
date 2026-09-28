@@ -1,0 +1,77 @@
+{% extends "index.html" %}
+
+{% block title %}
+Student Marks
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h3>
+                {{ sub_question.question_label }}
+            </h3>
+
+            <p class="text-muted">
+                Full Marks: {{ sub_question.marks }}
+            </p>
+        </div>
+
+        <a href="{% url 'add_semester_sub_question_mark' sub_question.id %}"
+           class="btn btn-primary">
+            + Add Student Mark
+        </a>
+
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {% if marks %}
+
+            <div class="table-responsive">
+
+                <table class="table table-bordered table-hover">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Student</th>
+                            <th>Obtained Marks</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for mark in marks %}
+                        <tr>
+                            <td>
+                                {{ mark.student.email }}
+                            </td>
+
+                            <td>
+                                {{ mark.obtained_marks }}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+
+            </div>
+
+            {% else %}
+
+            <div class="alert alert-info">
+                No student mark added yet.
+            </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

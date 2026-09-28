@@ -1,0 +1,115 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Notifications
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                🔔 Notifications
+            </h2>
+
+            <p class="text-muted mb-0">
+                Your latest notifications
+            </p>
+        </div>
+
+        <a href="{% url 'teacher_dashboard' %}"
+           class="btn btn-outline-secondary">
+            ← Dashboard
+        </a>
+
+    </div>
+
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div class="card border-0 shadow-sm mb-3">
+
+                <div class="card-body p-4">
+
+                    <div class="d-flex justify-content-between align-items-start">
+
+                        <div>
+
+                            <h5 class="fw-bold mb-2">
+                                {{ notification.title }}
+                            </h5>
+
+                            <p class="text-muted mb-2">
+                                {{ notification.message }}
+                            </p>
+
+                            <small class="text-muted">
+                                📅
+                                {{ notification.created_at|date:"d M Y, h:i A" }}
+                            </small>
+
+                        </div>
+
+
+                        {% if notification.notification_type == "course_assigned" %}
+
+                            <span class="badge bg-primary">
+                                Course
+                            </span>
+
+                        {% elif notification.notification_type == "notice" %}
+
+                            <span class="badge bg-warning text-dark">
+                                Notice
+                            </span>
+
+                        {% else %}
+
+                            <span class="badge bg-secondary">
+                                General
+                            </span>
+
+                        {% endif %}
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+
+    {% else %}
+
+        <div class="card border-0 shadow-sm">
+
+            <div class="card-body text-center py-5">
+
+                <div style="font-size: 55px;">
+                    🔕
+                </div>
+
+                <h4 class="fw-bold mt-3">
+                    No Notifications
+                </h4>
+
+                <p class="text-muted mb-0">
+                    You don't have any notifications yet.
+                </p>
+
+            </div>
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

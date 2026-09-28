@@ -1,0 +1,133 @@
+{% extends "index.html" %}
+
+{% block title %}
+Sub Questions - {{ question_set.set_name }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container mt-4">
+
+    <!-- Back Button -->
+    <div class="mb-3">
+    <a href="{% url 'semester_question_set_list' question_set.pattern.id %}"
+       class="btn btn-secondary">
+        ← Back
+    </a>
+</div>
+
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+
+            <h3 class="fw-bold mb-1">
+                {{ question_set.set_name }}
+            </h3>
+
+            <p class="text-muted mb-0">
+                Total Marks: {{ question_set.total_marks }}
+            </p>
+
+        </div>
+
+
+        <a href="{% url 'add_semester_sub_question' question_set.id %}"
+           class="btn btn-primary">
+
+            + Add Sub-question
+
+        </a>
+
+    </div>
+
+
+    <!-- Sub Questions Card -->
+    <div class="card shadow-sm border-0">
+
+        <div class="card-body">
+
+            {% if sub_questions %}
+
+                <div class="table-responsive">
+
+                    <table class="table table-bordered table-hover align-middle mb-0">
+
+                        <thead class="table-dark">
+
+                            <tr>
+
+                                <th width="15%" class="text-center">
+                                    Order
+                                </th>
+
+                                <th>
+                                    Question Label
+                                </th>
+
+                                <th width="20%" class="text-center">
+                                    Marks
+                                </th>
+
+                            </tr>
+
+                        </thead>
+
+
+                        <tbody>
+
+                            {% for question in sub_questions %}
+
+                            <tr>
+
+                                <!-- Order -->
+                                <td class="text-center">
+                                    {{ question.order }}
+                                </td>
+
+
+                                <!-- Question -->
+                                <td>
+                                    {{ question.question_label }}
+                                </td>
+
+
+                                <!-- Marks -->
+                                <td class="text-center">
+                                    {{ question.marks }}
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            {% else %}
+
+                <div class="alert alert-info mb-0">
+
+                    <strong>No sub-question added yet.</strong>
+
+                    <div class="mt-1">
+                        Click <strong>+ Add Sub-question</strong>
+                        to add a question.
+
+                    </div>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

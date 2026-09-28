@@ -1,0 +1,90 @@
+{% extends "index.html" %}
+
+{% block title %}
+Add Semester Question Pattern
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">
+                Add Semester Question Pattern
+            </h3>
+
+            <p class="text-muted mb-0">
+                Create a question pattern for a course
+            </p>
+        </div>
+
+        <a href="{% url 'semester_question_pattern_list' %}"
+           class="btn btn-outline-secondary">
+            Back
+        </a>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="{{ form.course.id_for_label }}"
+                           class="form-label fw-semibold">
+                        Course
+                    </label>
+
+                    {{ form.course }}
+
+                    {% for error in form.course.errors %}
+                        <div class="text-danger small">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.total_marks.id_for_label }}"
+                           class="form-label fw-semibold">
+                        Total Semester Marks
+                    </label>
+
+                    {{ form.total_marks }}
+
+                    {% for error in form.total_marks.errors %}
+                        <div class="text-danger small">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="bi bi-save"></i>
+                        Save Pattern
+                    </button>
+
+                    <a href="{% url 'semester_question_pattern_list' %}"
+                       class="btn btn-light border">
+                        Cancel
+                    </a>
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

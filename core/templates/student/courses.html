@@ -1,0 +1,107 @@
+{% extends "index.html" %}
+
+{% block title %}
+My Courses | Student Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="mb-4">
+
+        <a href="{% url 'student_dashboard' %}"
+           class="btn btn-sm btn-outline-secondary mb-3">
+            ← Back to Dashboard
+        </a>
+
+        <h2 class="fw-bold mb-1">
+            My Courses
+        </h2>
+
+        <p class="text-muted mb-0">
+            Session {{ student.session.year }}
+        </p>
+
+    </div>
+
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+                Select Year
+            </h5>
+
+            <small class="text-muted">
+                Select your academic year to view semesters
+            </small>
+
+        </div>
+
+
+        <div class="card-body">
+
+            {% if years %}
+
+                <div class="row g-4">
+
+                    {% for year in years %}
+
+                        <div class="col-md-6 col-lg-3">
+
+                            <div class="card border shadow-sm h-100">
+
+                                <div class="card-body text-center">
+
+                                    <div class="fs-1 mb-3">
+                                        🎓
+                                    </div>
+
+                                    <h5 class="fw-bold mb-3">
+                                        {{ year }} Year
+                                    </h5>
+
+                                    <a href="{% url 'student_year_courses' student.session.id year %}"
+                                       class="btn btn-primary w-100">
+                                        Open Year
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="text-center py-5">
+
+                    <div class="fs-1 mb-3">
+                        📚
+                    </div>
+
+                    <h6 class="fw-bold">
+                        No Courses Available
+                    </h6>
+
+                    <p class="text-muted mb-0">
+                        No courses are available for your session.
+                    </p>
+
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

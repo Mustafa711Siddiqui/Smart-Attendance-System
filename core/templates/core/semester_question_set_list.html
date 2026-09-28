@@ -1,0 +1,117 @@
+{% extends "index.html" %}
+
+{% block title %}
+Question Sets
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h3 class="fw-bold mb-1">
+                Question Sets
+            </h3>
+
+            <p class="text-muted mb-0">
+                Course:
+                {{ pattern.course.course_code }}
+                -
+                {{ pattern.course.course_name }}
+            </p>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="{% url 'semester_question_pattern_list' %}"
+               class="btn btn-outline-secondary">
+                Back
+            </a>
+
+            <a href="{% url 'add_semester_question_set' pattern.id %}"
+               class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i>
+                Add Question Set
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-0">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle mb-0">
+
+                    <thead class="table-dark">
+                        <tr>
+                            <th>#</th>
+                            <th>Set Name</th>
+                            <th>Total Marks</th>
+                            <th>Order</th>
+                            <th class="text-center">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        {% for question_set in question_sets %}
+
+                        <tr>
+                            <td>
+                                {{ forloop.counter }}
+                            </td>
+
+                            <td class="fw-semibold">
+                                Set {{ question_set.set_name }}
+                            </td>
+
+                            <td>
+                                {{ question_set.total_marks }}
+                            </td>
+
+                            <td>
+                                {{ question_set.order }}
+                            </td>
+
+                            <td class="text-center">
+
+                                <a href="{% url 'semester_sub_question_list' question_set.id %}"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Manage Sub-Questions
+                                </a>
+
+                            </td>
+                        </tr>
+
+                        {% empty %}
+
+                        <tr>
+                            <td colspan="5"
+                                class="text-center text-muted py-4">
+                                No question set found.
+                            </td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

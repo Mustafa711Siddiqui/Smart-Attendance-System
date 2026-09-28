@@ -1,0 +1,101 @@
+{% extends "index.html" %}
+
+
+{% block title %}
+Edit Session | Attendance Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h3 class="fw-bold mb-1">
+                        Edit Session
+                    </h3>
+
+                    <p class="text-muted mb-4">
+                        Update session information.
+                    </p>
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+
+                        <div class="mb-3">
+
+                            <label
+                                for="{{ form.year.id_for_label }}"
+                                class="form-label fw-semibold"
+                            >
+                                Session Year
+                            </label>
+
+                            {{ form.year }}
+
+                            {% if form.year.errors %}
+
+                                <div class="text-danger small mt-1">
+                                    {{ form.year.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="form-check mb-4">
+
+                            {{ form.is_graduated }}
+
+                            <label
+                                for="{{ form.is_graduated.id_for_label }}"
+                                class="form-check-label"
+                            >
+                                Graduated
+                            </label>
+
+                        </div>
+
+
+                        <div class="d-flex gap-2">
+
+                            <a
+                                href="{% url 'session_management' %}"
+                                class="btn btn-secondary"
+                            >
+                                Cancel
+                            </a>
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Update Session
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

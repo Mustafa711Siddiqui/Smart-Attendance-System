@@ -1,0 +1,76 @@
+{% extends "index.html" %}
+
+{% block title %}
+Create Attendance Classes
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <a href="{% url 'teacher_course_detail' course.id %}"
+   class="btn btn-secondary mt-3">
+    ← Back
+</a>
+
+    <div class="card shadow">
+
+        <div class="card-body p-5 text-center">
+
+            <h2 class="mb-3">
+                📋 Attendance Setup
+            </h2>
+
+            <h4 class="text-primary">
+                {{ course.course_code }} - {{ course.course_name }}
+            </h4>
+
+            <p class="text-muted mt-3">
+                Create attendance register for this course.
+            </p>
+
+            <hr>
+
+            <p>
+                <strong>Already Created:</strong>
+                {{ existing_classes }} / 39 Classes
+            </p>
+
+            {% if existing_classes < 39 %}
+
+                <p class="text-success">
+                    {{ 39|add:"-"|add:existing_classes }}
+                    classes will be created.
+                </p>
+
+                <form method="post">
+                    {% csrf_token %}
+
+                    <button
+                        type="submit"
+                        class="btn btn-primary px-5 py-3">
+                        📋 Create 39 Classes
+                    </button>
+
+                </form>
+
+            {% else %}
+
+                <div class="alert alert-success">
+                    ✅ All 39 classes have already been created.
+                </div>
+
+                <a
+                    href="{% url 'teacher_attendance_register' course.id %}"
+                    class="btn btn-success px-5">
+                    Open Attendance Register
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

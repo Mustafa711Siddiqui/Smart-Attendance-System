@@ -1,0 +1,53 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Notifications
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0">
+            🔔 Notifications
+        </h3>
+    </div>
+
+    {% if notifications %}
+
+        {% for notification in notifications %}
+
+            <div class="card mb-3 shadow-sm">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        {{ notification.title }}
+                    </h5>
+
+                    <p class="card-text mb-2">
+                        {{ notification.message }}
+                    </p>
+
+                    <small class="text-muted">
+                        {{ notification.created_at|date:"d M Y, h:i A" }}
+                    </small>
+
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    {% else %}
+
+        <div class="alert alert-info">
+            No notifications available.
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

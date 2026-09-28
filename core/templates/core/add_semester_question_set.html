@@ -1,0 +1,103 @@
+{% extends "index.html" %}
+
+{% block title %}
+Add Question Set
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <div class="mb-4">
+        <h3 class="fw-bold mb-1">
+            Add Question Set
+        </h3>
+
+        <p class="text-muted mb-0">
+            Course:
+            {{ pattern.course.course_code }}
+            -
+            {{ pattern.course.course_name }}
+        </p>
+    </div>
+
+    <div class="card shadow-sm border-0">
+        <div class="card-body p-4">
+
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label for="{{ form.set_name.id_for_label }}"
+                           class="form-label fw-semibold">
+                        Set Name
+                    </label>
+
+                    {{ form.set_name }}
+
+                    {% for error in form.set_name.errors %}
+                        <div class="text-danger small">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.total_marks.id_for_label }}"
+                           class="form-label fw-semibold">
+                        Total Marks
+                    </label>
+
+                    {{ form.total_marks }}
+
+                    {% for error in form.total_marks.errors %}
+                        <div class="text-danger small">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="mb-3">
+                    <label for="{{ form.order.id_for_label }}"
+                           class="form-label fw-semibold">
+                        Order
+                    </label>
+
+                    {{ form.order }}
+
+                    {% for error in form.order.errors %}
+                        <div class="text-danger small">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex gap-2">
+
+                    <button type="submit"
+                            class="btn btn-primary">
+                        <i class="bi bi-save"></i>
+                        Save Question Set
+                    </button>
+
+                    <a href="{% url 'semester_question_set_list' pattern.id %}"
+                       class="btn btn-light border">
+                        Cancel
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

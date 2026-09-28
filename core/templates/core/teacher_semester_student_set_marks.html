@@ -1,0 +1,97 @@
+{% extends "index.html" %}
+
+{% block title %}
+{{ student.get_full_name|default:student.username }} | Set {{ question_set.set_name }}
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <a href="{% url 'teacher_semester_student_sets' course.id student.id %}" class="btn btn-sm btn-outline-secondary mb-3">
+            ← Back to Student Sets
+        </a>
+
+        <h2 class="fw-bold mb-1">Student: {{ student.get_full_name|default:student.username }}</h2>
+        <p class="text-muted mb-1">Roll: {{ student.roll|default:"-" }}</p>
+        <p class="text-muted mb-1">Course: {{ course.course_code }} - {{ course.course_name }}</p>
+        <p class="text-muted mb-0">Session: {{ course.session.year }}</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-success{% else %}alert-info{% endif %} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post">
+        {% csrf_token %}
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h5 class="fw-bold mb-1">{{ student.get_full_name|default:student.username }}</h5>
+                        <small class="text-muted">Set: {{ question_set.set_name }}</small>
+                    </div>
+                    <span class="badge bg-primary px-3 py-2">Set Total: {{ total_obtained }} / {{ question_set.total_marks }}</span>
+                </div>
+            </div>
+
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover align-middle mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 150px;">Question</th>
+                                <th style="width: 160px;">Full Marks</th>
+                                <th style="width: 220px;" class="text-center">Obtained Marks</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for row in sub_question_rows %}
+                                <tr>
+                                    <td><strong>{{ row.sub_question.question_label }}</strong></td>
+                                    <td>{{ row.sub_question.marks }}</td>
+                                    <td class="text-center">
+                                        <input
+                                            type="number"
+                                            name="marks_{{ row.sub_question.id }}"
+                                            class="form-control text-center"
+                                            min="0"
+                                            max="{{ row.sub_question.marks }}"
+                                            step="0.01"
+                                            value="{{ row.obtained }}"
+                                            placeholder="0.00"
+                                        >
+                                    </td>
+                                </tr>
+                            {% empty %}
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-5">No sub-questions found for this set.</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card-footer bg-white py-3">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <strong>Set Total:</strong>
+                        <span class="badge bg-success ms-2">{{ total_obtained }} / {{ question_set.total_marks }}</span>
+                    </div>
+
+                    <div>
+                        <a href="{% url 'teacher_semester_student_sets' course.id student.id %}" class="btn btn-outline-secondary me-2">Cancel</a>
+                        <button type="submit" class="btn btn-success px-4">Save Marks</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}

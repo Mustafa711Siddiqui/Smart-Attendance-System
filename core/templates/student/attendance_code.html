@@ -1,0 +1,362 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Attendance - {{ course.course_code }}
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="card shadow-sm mx-auto"
+         style="max-width: 650px;">
+
+        <div class="card-body p-5 text-center">
+
+
+            <!-- =====================================
+                 PAGE TITLE
+            ====================================== -->
+
+            <h3 class="mb-2">
+                📋 Mark Attendance
+            </h3>
+
+
+            <!-- =====================================
+                 COURSE INFORMATION
+            ====================================== -->
+
+            <p class="text-muted mb-4">
+
+                <strong>
+                    {{ course.course_code }}
+                </strong>
+
+                <br>
+
+                {{ course.course_name }}
+
+            </p>
+
+
+            {% if attendance_sessions %}
+
+
+                <!-- =================================
+                     ACTIVE ATTENDANCE INFORMATION
+                ================================== -->
+
+                <div class="alert alert-info text-start">
+
+                    <div class="text-center mb-3">
+
+                        <span class="badge bg-success px-3 py-2">
+
+                            🟢 Attendance Currently Active
+
+                        </span>
+
+                    </div>
+
+
+                    {% for attendance in attendance_sessions %}
+
+                        <div class="card border-primary mb-2">
+
+                            <div class="card-body py-3">
+
+                                <div class="row align-items-center">
+
+
+                                    <!-- CLASS -->
+
+                                    <div class="col-md-6 text-center text-md-start">
+
+                                        <div class="fw-bold fs-5">
+
+                                            📚 Class
+                                            {{ attendance.class_number }}
+
+                                        </div>
+
+                                        <div class="small text-muted mt-1">
+
+                                            📅
+
+                                            {{ attendance.date|date:"d M Y" }}
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <!-- STATUS -->
+
+                                    <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+
+                                        <span class="badge bg-success">
+
+                                            ● Active
+
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+
+                    <!-- INSTRUCTION -->
+
+                    <div class="text-center mt-3">
+
+                        Enter the attendance code
+                        given by your teacher.
+
+                    </div>
+
+                </div>
+
+
+                <!-- =================================
+                     ERROR MESSAGE
+                ================================== -->
+
+                {% if error %}
+
+                    <div class="alert alert-danger">
+
+                        ❌ {{ error }}
+
+                    </div>
+
+                {% endif %}
+
+
+                <!-- =================================
+                     ATTENDANCE CODE FORM
+                ================================== -->
+
+                <form
+                    method="post"
+                    id="attendanceCodeForm"
+                    data-network-url="{% url 'verify_attendance_network' course.id %}">
+
+                    {% csrf_token %}
+
+
+                    <div class="mb-4">
+
+                        <label
+                            class="form-label fw-bold"
+                            for="attendanceCode"
+                        >
+
+                            Attendance Code
+
+                        </label>
+
+
+                        <input
+                            type="text"
+                            id="attendanceCode"
+                            name="code"
+                            class="form-control form-control-lg text-center"
+                            placeholder="Enter 6-digit code"
+                            maxlength="6"
+                            minlength="6"
+                            autocomplete="off"
+                            autocapitalize="characters"
+                            style="
+                                letter-spacing: 8px;
+                                font-size: 24px;
+                                font-weight: bold;
+                                text-transform: uppercase;
+                            "
+                            required
+                        >
+
+                        <div class="form-text">
+
+                            Enter the 6-character code
+                            displayed by your teacher.
+
+                        </div>
+
+                        <div class="form-text mt-2">
+
+                            Connect to the same Wi-Fi network as the teacher.
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- VERIFY BUTTON -->
+
+                    <button
+                        type="submit"
+                        id="submitAttendanceBtn"
+                        class="btn btn-primary btn-lg px-5"
+                    >
+
+                        Verify Attendance
+
+                    </button>
+
+                </form>
+
+                <div id="networkStatus" class="mt-3"></div>
+
+
+            {% else %}
+
+
+                <!-- =================================
+                     NO ACTIVE ATTENDANCE
+                ================================== -->
+
+                <div class="alert alert-warning">
+
+                    <div class="fs-5 mb-2">
+
+                        🟡 No Active Attendance
+
+                    </div>
+
+                    <div>
+
+                        No attendance session is
+                        currently active for this course.
+
+                    </div>
+
+                    <div class="mt-2">
+
+                        Please ask your teacher
+                        to start attendance.
+
+                    </div>
+
+                </div>
+
+
+            {% endif %}
+
+
+            <!-- =====================================
+                 BACK TO COURSES
+            ====================================== -->
+
+            <a
+                href="{% url 'student_semester_courses' course.session.id course.year course.semester %}"
+                class="btn btn-outline-secondary mt-4"
+            >
+
+                ← Back to Courses
+
+            </a>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================
+     CODE INPUT SCRIPT
+========================================= -->
+
+<script>
+
+const codeInput =
+    document.getElementById("attendanceCode");
+
+if (codeInput) {
+
+    codeInput.addEventListener(
+        "input",
+        function () {
+
+            this.value =
+                this.value
+                .toUpperCase()
+                .replace(/[^A-Z0-9]/g, "");
+
+        }
+    );
+
+}
+
+</script>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const attendanceCodeForm = document.getElementById("attendanceCodeForm");
+const submitAttendanceBtn = document.getElementById("submitAttendanceBtn");
+const networkStatus = document.getElementById("networkStatus");
+
+function showNetworkStatus(message, type) {
+    networkStatus.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+}
+
+if (attendanceCodeForm) {
+attendanceCodeForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    submitAttendanceBtn.disabled = true;
+    submitAttendanceBtn.textContent = "Checking network...";
+    showNetworkStatus("Checking network...", "info");
+
+    const body = new URLSearchParams(new FormData(attendanceCodeForm));
+
+    fetch(attendanceCodeForm.dataset.networkUrl, {
+        method: "POST",
+        headers: {
+            "X-CSRFToken": attendanceCodeForm.querySelector("[name=csrfmiddlewaretoken]").value
+        },
+        body: body
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (!data.network_verified) {
+                showNetworkStatus(
+                    data.message || "✗ Network Verification Failed<br>Please connect to the same Wi-Fi network as the teacher and try again.",
+                    "danger"
+                );
+                submitAttendanceBtn.disabled = false;
+                submitAttendanceBtn.textContent = "Verify Attendance";
+                return;
+            }
+
+            showNetworkStatus(
+                "✓ Network Verified<br>You are connected to the same network as the teacher.",
+                "success"
+            );
+
+            setTimeout(function () {
+                attendanceCodeForm.submit();
+            }, 800);
+        })
+        .catch(function () {
+            showNetworkStatus(
+                "✗ Network Verification Failed<br>Please connect to the same Wi-Fi network as the teacher and try again.",
+                "danger"
+            );
+            submitAttendanceBtn.disabled = false;
+            submitAttendanceBtn.textContent = "Verify Attendance";
+        });
+});
+}
+</script>
+{% endblock %}

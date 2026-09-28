@@ -1,0 +1,181 @@
+{% extends "index.html" %}
+
+
+{% block title %}
+Edit Course | Attendance Management System
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-8 col-lg-7">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <div class="mb-4">
+
+                        <h3 class="fw-bold mb-1">
+                            Edit Course
+                        </h3>
+
+                        <p class="text-muted mb-0">
+                            Update course information.
+                        </p>
+
+                    </div>
+
+
+                    <form method="POST">
+
+                        {% csrf_token %}
+
+
+                        <!-- Course Code -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Course Code
+                            </label>
+
+                            {{ form.course_code }}
+
+                            {% if form.course_code.errors %}
+
+                                <div class="text-danger small">
+                                    {{ form.course_code.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Course Name -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Course Name
+                            </label>
+
+                            {{ form.course_name }}
+
+                            {% if form.course_name.errors %}
+
+                                <div class="text-danger small">
+                                    {{ form.course_name.errors }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- Year & Semester -->
+
+                        <div class="row">
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Year
+                                </label>
+
+                                {{ form.year }}
+
+                            </div>
+
+
+                            <div class="col-md-6 mb-3">
+
+                                <label class="form-label fw-semibold">
+                                    Semester
+                                </label>
+
+                                {{ form.semester }}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- Credit -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Credit
+                            </label>
+
+                            {{ form.credit }}
+
+                        </div>
+
+
+                        <!-- Session -->
+
+                        <div class="mb-3">
+
+                            <label class="form-label fw-semibold">
+                                Session
+                            </label>
+
+                            {{ form.session }}
+
+                        </div>
+
+
+                        <!-- Teacher -->
+
+                        <div class="mb-4">
+
+                            <label class="form-label fw-semibold">
+                                Teacher
+                            </label>
+
+                            {{ form.teacher }}
+
+                        </div>
+
+
+                        <!-- Buttons -->
+
+                        <div class="d-flex justify-content-end gap-2">
+
+                            <a
+                                href="{% url 'course_management' %}"
+                                class="btn btn-secondary"
+                            >
+                                Cancel
+                            </a>
+
+
+                            <button
+                                type="submit"
+                                class="btn btn-primary"
+                            >
+                                Update Course
+                            </button>
+
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

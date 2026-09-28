@@ -1,0 +1,263 @@
+{% extends "index.html" %}
+
+{% block title %}
+    Student Profile | Attendance Management System
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+    <!-- Header -->
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <div>
+            <h2 class="fw-bold mb-1">
+                Student Profile
+            </h2>
+
+            <p class="text-muted mb-0">
+                Student information and academic details
+            </p>
+        </div>
+
+        <a
+            href="{% url 'student_management' %}"
+            class="btn btn-secondary"
+        >
+            ← Back to Students
+        </a>
+
+    </div>
+
+
+    <!-- Profile Card -->
+
+    <div class="card border-0 shadow-sm mb-4">
+
+        <div class="card-body p-4">
+
+            <div class="row align-items-center">
+
+                <!-- Profile Image -->
+
+                <div class="col-auto">
+
+                    {% if student.profile_image %}
+
+                        <img
+                            src="{{ student.profile_image.url }}"
+                            alt="Student Profile"
+                            class="rounded-circle"
+                            width="110"
+                            height="110"
+                            style="object-fit: cover;"
+                        >
+
+                    {% else %}
+
+                        <div
+                            class="rounded-circle bg-primary text-white
+                                   d-flex align-items-center
+                                   justify-content-center"
+                            style="width:110px;height:110px;"
+                        >
+
+                            <span class="fs-1 fw-bold">
+                                {{ student.first_name|first|upper }}
+                            </span>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <!-- Name -->
+
+                <div class="col">
+
+                    <h3 class="fw-bold mb-1">
+
+                        {{ student.first_name }}
+                        {{ student.last_name }}
+
+                    </h3>
+
+                    <p class="text-muted mb-2">
+                        {{ student.email }}
+                    </p>
+
+                    {% if student.is_active %}
+
+                        <span class="badge bg-success">
+                            Active Student
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge bg-danger">
+                            Inactive Student
+                        </span>
+
+                    {% endif %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- Student Information -->
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="card-header bg-white py-3">
+
+            <h5 class="fw-bold mb-0">
+                Student Information
+            </h5>
+
+        </div>
+
+        <div class="card-body">
+
+            <div class="row g-4">
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Student Roll
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+                        {{ student.roll|default:"—" }}
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Username
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+                        {{ student.username }}
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Email
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+                        {{ student.email }}
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Gender
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+                        {{ student.get_gender_display|default:"—" }}
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Date of Birth
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+
+                        {% if student.date_of_birth %}
+                            {{ student.date_of_birth }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Academic Session
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+
+                        {% if student.session %}
+                            {{ student.session.year }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-4">
+
+                    <small class="text-muted">
+                        Position
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+
+                        {% if student.position %}
+                            {{ student.position.name }}
+                        {% else %}
+                            —
+                        {% endif %}
+
+                    </h6>
+
+                </div>
+
+
+                <div class="col-md-8">
+
+                    <small class="text-muted">
+                        Address
+                    </small>
+
+                    <h6 class="fw-bold mt-1">
+                        {{ student.address|default:"—" }}
+                    </h6>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

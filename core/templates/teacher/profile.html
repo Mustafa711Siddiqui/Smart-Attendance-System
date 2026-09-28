@@ -1,0 +1,210 @@
+{% extends "index.html" %}
+
+{% block title %}
+    My Profile | Teacher Dashboard
+{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <!-- Header -->
+    <div class="mb-4">
+        <h2 class="fw-bold mb-1">My Profile</h2>
+        <p class="text-muted mb-0">
+            View your personal and professional information
+        </p>
+    </div>
+
+    <a
+    href="{% url 'teacher_edit_profile' %}"class="btn btn-primary">
+    ✏️ Edit Profile
+</a>
+
+
+    <div class="row g-4">
+
+        <!-- Profile Card -->
+        <div class="col-lg-4">
+
+            <div class="card border-0 shadow-sm text-center h-100">
+
+                <div class="card-body p-4">
+
+                    {% if teacher.profile_image %}
+
+                        <img
+                            src="{{ teacher.profile_image.url }}"
+                            alt="Profile"
+                            class="rounded-circle mb-3"
+                            style="
+                                width: 140px;
+                                height: 140px;
+                                object-fit: cover;
+                            "
+                        >
+
+                    {% else %}
+
+                        <div
+                            class="rounded-circle bg-primary text-white
+                                   d-flex align-items-center
+                                   justify-content-center
+                                   mx-auto mb-3"
+                            style="
+                                width: 140px;
+                                height: 140px;
+                                font-size: 50px;
+                                font-weight: 600;
+                            "
+                        >
+                            {{ teacher.first_name|first|upper }}
+                        </div>
+
+                    {% endif %}
+
+
+                    <h4 class="fw-bold mb-1">
+                        {{ teacher.get_full_name|default:teacher.username }}
+                    </h4>
+
+                    <p class="text-muted mb-3">
+                        {{ teacher.email }}
+                    </p>
+
+                    <span class="badge bg-success px-3 py-2">
+                        Active Teacher
+                    </span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Information -->
+        <div class="col-lg-8">
+
+            <div class="card border-0 shadow-sm">
+
+                <div class="card-body p-4">
+
+                    <h5 class="fw-bold mb-4">
+                        Personal Information
+                    </h5>
+
+                    <div class="row g-4">
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                First Name
+                            </small>
+                            <strong>
+                                {{ teacher.first_name|default:"—" }}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Last Name
+                            </small>
+                            <strong>
+                                {{ teacher.last_name|default:"—" }}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Email
+                            </small>
+                            <strong>
+                                {{ teacher.email|default:"—" }}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Username
+                            </small>
+                            <strong>
+                                {{ teacher.username|default:"—" }}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Gender
+                            </small>
+                            <strong>
+                                {{ teacher.gender|default:"—" }}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Date of Birth
+                            </small>
+                            <strong>
+                                {{ teacher.date_of_birth|default:"—" }}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Position
+                            </small>
+                            <strong>
+                                {% if teacher.position %}
+                                    {{ teacher.position.name }}
+                                {% else %}
+                                    —
+                                {% endif %}
+                            </strong>
+                        </div>
+
+
+                        <div class="col-md-6">
+                            <small class="text-muted d-block">
+                                Role
+                            </small>
+                            <strong>
+                                Teacher
+                            </strong>
+                        </div>
+
+
+                        <div class="col-12">
+
+                            <small class="text-muted d-block">
+                                Address
+                            </small>
+
+                            <strong>
+                                {{ teacher.address|default:"—" }}
+                            </strong>
+
+                        </div>
+
+
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+        
+
+    </div>
+
+</div>
+
+{% endblock %}
