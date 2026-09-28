@@ -19,3 +19,4 @@ media/
 *.log
 
 .python-version
+data.json
