@@ -38,7 +38,12 @@ from.forms import(
 
 def get_request_network_identifier(request):
 
-    client_address = request.META.get("REMOTE_ADDR")
+    forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR", "")
+    client_address = (
+        forwarded_for.split(",", 1)[0].strip()
+        if forwarded_for
+        else request.META.get("REMOTE_ADDR")
+    )
 
     if not client_address:
         return None
@@ -48,6 +53,11 @@ def get_request_network_identifier(request):
     except ValueError:
         return None
 
+    # Render forwards the public client IP. Keep it exact there so two
+    # different public networks cannot match by sharing a broad subnet.
+    if forwarded_for:
+        return str(address)
+
     prefix_length = 24 if address.version == 4 else 64
 
     return str(
@@ -55,6 +65,17 @@ def get_request_network_identifier(request):
             f"{address}/{prefix_length}",
             strict=False
         )
+    )
+
+
+def attendance_network_matches(request, attendance):
+
+    student_network = get_request_network_identifier(request)
+
+    return bool(
+        student_network
+        and attendance.network_identifier
+        and student_network == attendance.network_identifier
     )
 
 def login_view(request):
@@ -2081,7 +2102,10 @@ def student_face_verification(request, attendance_id):
 
     network_verified_key = f"network_verified_{attendance.id}"
 
-    if not request.session.get(network_verified_key, False):
+    if not request.session.get(network_verified_key, False) or not attendance_network_matches(
+        request,
+        attendance
+    ):
         if request.method == "POST":
             return JsonResponse({
                 "success": False,
