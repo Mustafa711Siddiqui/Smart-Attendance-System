@@ -62,7 +62,7 @@ class AttendanceNetworkVerificationTests(TestCase):
 		)
 
 	def test_forwarded_client_ip_is_used_for_network_verification(self):
-		self.attendance.network_identifier = "203.0.113.25"
+		self.attendance.network_identifier = "203.0.113.0/24"
 		self.attendance.save(update_fields=["network_identifier"])
 
 		response = self.client.post(
@@ -74,6 +74,20 @@ class AttendanceNetworkVerificationTests(TestCase):
 
 		self.assertEqual(response.status_code, 200)
 		self.assertTrue(response.json()["network_verified"])
+
+	def test_forwarded_client_ip_from_different_network_is_rejected(self):
+		self.attendance.network_identifier = "203.0.113.0/24"
+		self.attendance.save(update_fields=["network_identifier"])
+
+		response = self.client.post(
+			reverse("verify_attendance_network", args=[self.attendance.course_id]),
+			{"code": "ABC123"},
+			REMOTE_ADDR="10.0.0.1",
+			HTTP_X_FORWARDED_FOR="198.51.100.25, 10.0.0.1",
+		)
+
+		self.assertEqual(response.status_code, 200)
+		self.assertFalse(response.json()["network_verified"])
 
 	def test_face_post_rechecks_current_network(self):
 		session = self.client.session

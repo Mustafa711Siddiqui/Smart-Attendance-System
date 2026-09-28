@@ -53,11 +53,6 @@ def get_request_network_identifier(request):
     except ValueError:
         return None
 
-    # Render forwards the public client IP. Keep it exact there so two
-    # different public networks cannot match by sharing a broad subnet.
-    if forwarded_for:
-        return str(address)
-
     prefix_length = 24 if address.version == 4 else 64
 
     return str(
